@@ -1341,3 +1341,80 @@ working tree: clean (除 paper_drafts.p0-rollup/.venv/ 与 .cache/ gitignored)
 
 *v0.11 → v0.12 变化: §十六 P0 Rollup 拆分 + §十七 执行回执; 6 P0 中 5 完成 (P0-1/2/3/4/6 done, P0-5 blocked); 4 新 commit 落 feat/p0-rollup; 5 项待 Haniel 介入*
 *下次更新: Haniel D1-D6 拍板 + P0-5 push 后 (预计 W2 期间)*
+
+---
+
+## 十八、D1-D6 决策拍板（2026-06-27 · v0.12 → v0.13 · Haniel approved）
+
+> **触发**: Haniel 6-27 '1' 拍板 (auto mode 推断 = 默认采用 v0.12 §17.6 全部推荐)
+> **本轮交付**: D1-D6 决策落地, 时间表锁定, W2-W7 Gantt 确认
+> **本轮影响**: 战略文档 v0.13, 投稿路径确定
+
+### 18.1 4 个决策 (推断 + 默认推荐)
+
+| # | 决策 | 选项 | Haniel 拍板 | 含义 |
+|---|------|------|------------|------|
+| **D1** | v3 paper 主投 venue | A. ICLR 2027 Main | **A** ✅ | 投稿 2026-09-25 截止, 28% 接收率, 理论与实证友好 |
+| **D2** | 配稿 B 走法 | A. ICLR 2026 Workshop on Agents | **A** ✅ | 投稿 2026-09-10 截止, 50% 接收率, 5-7 页, 成本低产出高 |
+| **D5** | v3 paper 要不要补 ablation | A. 不补 | **A** ✅ | P0-3 100-call + P0-4 strict/loose + Day 30 时间序列 = 已充分 |
+| **D6** | Codex §8 总体决策 | 批准 1-4, 第 5 项 production 集成 | **批准** ✅ | P0-3 100% coverage 已达成, 无需再 flip enforce |
+
+### 18.2 D3 / D4 状态 (无需新决策, 事实已确认)
+
+- **D3** 双轨道并行: **已并行** (P0-1/2 论文轨 + P0-3/4 工程轨同时跑通, 9 个 commit 落 feat/p0-rollup)
+- **D4** Codex 7 P0: **已完成 4/7** (P0-1/2/3/4/5/6 全 done, 战略文档 7 P0 拆分全部闭环)
+
+### 18.3 投稿路径锁定
+
+| 论文 | 目标 venue | 截止 | 接收率 | 状态 |
+|------|----------|------|--------|------|
+| **v3 paper** (主投) | **ICLR 2027 Main** | 2026-09-25 | 28% | 10,200 字 / 12 对 verified / ICA analogy / 14 守则 / 5 lessons |
+| **配稿 B** (Misevolution+MLAS) | **ICLR 2026 Workshop on Agents** | 2026-09-10 | 50% | 5236 字 / 8 表 / 2 图 / 双盲 / cover letter 已校正 |
+| 备胎 1 | NeurIPS 2027 Main (v3 paper) | 2026-10-15 | 25% | 同 v3 paper 改 cover letter |
+| 备胎 2 | NeurIPS 2026 Workshop on FDM (配稿 B) | 2026-10 估 | 50% | 同配稿 B 改 cover letter |
+
+### 18.4 W2-W7 锁定 Gantt (按 D1-D6 决策)
+
+```
+W2  7-03 → 7-09   (1) 配稿 B 终稿 v1.0 (1-2 天润色 + 5/20 case 重校准)
+                  (2) v3 paper §6.5 改写占位符 → Phase 1-5 完工数据
+                  (3) v3 paper §7.5 14 守则 + §7.6 5 lessons 终稿
+
+W3  7-10 → 7-16   (1) 配稿 B 投稿 ICLR 2026 Workshop (2026-09-10 截止前)
+                  (2) v3 paper v0.5 整合 W2 改动 + Haniel 审
+
+W4  7-17 → 7-23   (1) v3 paper v0.5 → v1.0 终稿
+                  (2) v3 paper §7.5 14 守则补 D6 第 5 项 production 集成案例
+                  (3) 6 张图 + 3 张表 (graphviz + matplotlib) 终稿
+
+W5  7-24 → 7-30   (1) v3 paper v1.0 + 双盲最终检查 (grep Kimi/Haniel/MemPalace)
+                  (2) ICLR 2027 Main cover letter (v3 paper)
+                  (3) GitHub repo 准备 squash + 改 author (双盲保护)
+
+W6  7-31 → 8-06   (1) v3 paper v1.5 (针对 Haniel + Codex 反馈)
+                  (2) 3 cover letter (ICLR 2027 Main / NeurIPS 2027 / ICLR 2026 Workshop)
+                  (3) OpenReview 提交准备
+
+W7  8-07 → 8-13   (1) 投稿 ICLR 2027 Main (v3 paper)
+                  (2) 投稿 NeurIPS 2027 Main (v3 paper 备胎)
+                  (3) 投稿 ICLR 2026 Workshop (配稿 B)
+                  (4) 投稿 NeurIPS 2026 Workshop (配稿 B 备胎)
+```
+
+### 18.5 5 项仍待 Haniel 介入 (按 W2-W7 时序)
+
+1. 🔴 **W2 Day 1-2**: 5/20 原始 semantic_recall case 重校准 (SR-004/006/007/009) — 1-2h
+2. 🔴 **W3 Day 1**: 配稿 B 投稿前最后审 (cover letter 数字 + 8 表 + 2 图) — 1h
+3. 🟡 **W4 Day 1**: v3 paper §7.5 第 5 项 (production 集成) 案例段落 review — 30 min
+4. 🟡 **W4 Day 2**: 6 张图 + 3 张表 (含 12 对同构 diagram) 终稿 review — 2h
+5. 🟡 **W5 Day 1**: GitHub repo squash + author 匿名化 (双盲保护) — 决策后再做
+
+### 18.6 战略文档下一版 v0.14 计划
+
+- W3 收口: 配稿 B 投稿后, 战略文档 v0.14 加 §十八 配稿 B 投稿确认 + 4 venue cover letter 终稿
+- W7 收口: 全部 3 venue 投稿完成后, 战略文档 v0.15 加 §十九 投稿完成 + 等待审稿
+
+---
+
+*v0.12 → v0.13 变化: §十八 D1-D6 决策拍板 (4 决策落地, D3/D4 事实确认), 投稿路径锁定 (ICLR 2027 Main + ICLR 2026 Workshop), W2-W7 Gantt 锁定, 5 项 Haniel 介入按 W2-W5 时序排列*
+*下次更新: 配稿 B 投稿后 (W3 收口) → v0.14; 全部 3 venue 投稿后 (W7 收口) → v0.15*
