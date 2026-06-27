@@ -363,7 +363,7 @@ The combined framework predicts:
 1. **OS-style privilege separation** (e.g., R1-R4) should improve **system stability** in both model-layer and coordination-layer deployments. ✅ Confirmed: Agent-B (90% equipment rate with R1-R4) outperforms Agent-I (35% without).
 2. **L2 cache ↔ KV cache ↔ Inbox freshness decay**: all three should exhibit exponential decay form $S(t) = S_0 \exp(-\lambda t)$. ✅ Confirmed: inbox weight reduced 76% at 24h with $\lambda = 0.05$/hour; OpenMythos LTI spectral radius invariant at 0.3679 = $\exp(-1)$ across 100 forward passes.
 3. **L4 (OS) ↔ the coordination bus governance**: the OS analogy implies resource management primitives (priority queues, capability tokens, scheduling). ✅ Confirmed: the 5-bridge coordination bus governance implements priority-based dispatch with quality gates, similar to OS scheduler + access control.
-4. **L6 (file system) ↔ Long-term memory**: long-term memory should support versioning, namespace isolation, integrity checks. ✅ Confirmed: memory-palace 4-layer (Project/Agent/User/Shared) with 1175 chunks + RAG embedding + decay.
+4. **L6 (file system) ↔ Long-term memory**: long-term memory should support versioning, namespace isolation, integrity checks. ✅ Confirmed: the agent's long-term memory store (4-layer hierarchy: Project/Agent/User/Shared) with 1175 chunks + RAG embedding + decay.
 
 ---
 
@@ -478,7 +478,7 @@ We upgrade Agent-H's Sleep-Time Compute to follow DCPM's two-system design:
 class DCPMAgent-H:
     def system1_sync_writer(self, agent: str, event: dict):
         # Synchronous daytime writer
-        self.memory-palace.add_drawer(content=event, room="interactions")
+        self.long_term_memory_store.add_chunk(content=event, room="interactions")
     
     async def system2_nighttime_engine(self):
         # Asynchronous consolidation during idle
@@ -798,10 +798,10 @@ Future work: replicate at 100+ agent scale; formalize the ICA mapping with mathe
 | Item | Status | Path |
 |------|--------|------|
 | 5-pass sanity check script (model layer) | ✅ | `supplementary/vendored/.../OpenMythos/sanity_check.py` |
-| 5-pass sanity check script (coordination layer) | ✅ | `~/.memory-palace/scripts/sanity_check_v2.py` |
+| 5-pass sanity check script (coordination layer) | ✅ | the agent's private memory layer scripts (`sanity_check_v2.py`, anonymized path) |
 | ICA mapping table | ✅ | Section 5.2 |
 | SkillDAG deployment code | ✅ | `supplementary/code/skill_registry/agent-framework/skill_dag.py` |
-| CADVP v1.1 implementation | ✅ | `~/.memory-palace/lib/cadvp_v1_1.py` |
+| CADVP v1.1 implementation | ✅ | the agent's private library (`cadvp_v1_1.py`, anonymized path) |
 | MLAS 25 checklist | ✅ | `agents/kadmiel/mlas_25.py` |
 | Teaching Claude Why SOUL update | ✅ | `agents/kimi/SOUL.md` v2.0 |
 | DCPM dual-process memory | ✅ | `agents/kadmiel/sleep_manager.py` |
