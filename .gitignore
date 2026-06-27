@@ -23,6 +23,8 @@ Thumbs.db
 *.index
 *.tmp
 *.bak
+*.bak.*
+*.py.bak
 
 # Local secrets / env
 .env
