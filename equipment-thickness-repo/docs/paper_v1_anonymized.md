@@ -44,6 +44,10 @@ This paper makes four contributions:
 
 We make no claim that **Equipment Thickness Theory** is a complete theory of agentic capability. We make the narrower claim: in production multi-agent deployments, equipment thickness is a **first-order variable** that explains observed capability variance, and it has an analyzable structure. Our cross-layer isomorphism is the first systematic account; it is consistent with all evidence we have collected, but we discuss conditions under which it would be falsified (Section 7).
 
+![Figure 1: $C(\rho)=1-e^{-\beta\rho}$, $\beta\in\{0.3,0.5,0.7\}$; $\rho_{\min}=0.5$.](figures/fig1_theory_framework.png){#fig:theory_framework}
+
+![Figure 2: 12 cross-layer pairs, model ↔ coordination; solid = verified.](figures/fig2_12_isomorphisms.png){#fig:iso12}
+
 ---
 
 ## 2. Background
@@ -262,7 +266,7 @@ We have empirical evidence against F1-F3 in our 8-agent system, but acknowledge 
 
 ### 4.1 Extension from 5 to 12 pairs
 
-Our prior Two-Layer Loop Hypothesis (2026-06) identified 5 cross-layer component pairs (RDT↔RWMA). We extend that to **12 pairs**, validated via 5-pass sanity check for **all 12 pairs** (4 newly added in this paper, see §4.2.2). The 5-pass methodology is fully applied to every pair; per-pair results are summarised in the table and detailed sub-test evidence is in §4.2.2.
+Prior Two-Layer Loop Hypothesis (2026-06) identified 5 cross-layer pairs. We extend to **12 pairs** (4 new); sub-tests in §4.2.2.
 
 | # | Model-layer component | Coordination-layer component | Mathematical correspondence | Sanity check status |
 |---|------------------------|-------------------------------|------------------------------|---------------------|
@@ -636,6 +640,27 @@ To consolidate the per-phase results above into a single auditable artifact, we 
 
 **Reading the table**: Five of six rows are ✅; Phase 4 is marked *partial* because the strict-mode gain over the v1 35% baseline (35% → 60% hybrid_v2) is smaller than the loose-mode gain (90% → 93.3%), reflecting ground-truth drift in 5/20 v1 cases — see §6.7.4 footnote. The Sprint-total row is the weighted aggregate across all five phases (each phase counts as 20%); the 80% Day-30 figure is identical to the headline row of §6.7.5 and to the `codex sprint total` entry in `30_day_completion_report.md §1`.
 
+#### 6.7.7 Visuals and completion
+
+![Figure 3: 90-day equipment timeline, 8 agents.](figures/fig3_8agent_equipment_timeline.png){#fig:timeline}
+
+![Figure 4: Minimum-viable scatter.](figures/fig4_minimum_viable.png){#fig:minviable}
+
+![Figure 5: Equal-upgrade throughput (3.0–3.8×).](figures/fig5_industry_signal.png){#fig:industry}
+
+![Figure 6: Equipment vs model-scale ROI.](figures/fig6_roi_comparison.png){#fig:roi}
+
+| Phase | Day 5 | Day 14 | Day 21 | Day 30 |
+|-------|-------|--------|--------|--------|
+| P1 Outcome | 8/9/20 | — | — | **+90% classified** |
+| P2 Action | 10/30/20-20 | — | — | **100%** |
+| P3 Router | 80% local | 16 routes | 16 routes | **100% emit (P0-3)** |
+| P4 Recall | 0 | 361/35% | — | **60% / 93.3%** ⚠ |
+| P5 SkillDAG | 0 | 0 | 49/37/93.4% | **207/159/95%** (1.7×) |
+| **Total** | 25% | 45% | 60% | **80%** |
+
+(Table 3.)
+
 ### 6.8 Operational rules for AGI-like systems (sprint distillation)
 
 The 9 operational rules that emerged from the sprint:
@@ -777,31 +802,29 @@ Future work: replicate at 100+ agent scale; formalize the ICA mapping with mathe
 
 ## Appendices
 
-### A.1 8-agent equipment configuration
+### A.1 8-agent equipment (Table 2)
 
-(Detailed in supplementary; abridged here for space.)
-
-| Agent | Equipment rate | Items |
-|-------|----------------|-------|
-| Agent-A | 95% | 17 of 18 standard + Doctor + skill-evolution + policy-check + audit-analyzer + A2A + auto-remediation |
-| Agent-B | 90% | 16 of 18 + safe-write + Doctor + the coordination bus 3 reviewer |
-| Agent-C | 75% | 14 of 18 + Doctor + Reflexion + part of the coordination bus |
-| Agent-F | 75% | 14 of 18 + Doctor + Reflexion + scheduler |
-| Agent-H | 70% | 13 of 18 + 5 safety boundaries + R1-R4 (after v1.2) |
-| Agent-G | 65% | 12 of 18 + system monitoring |
-| Agent-D | 60% | 11 of 18 + quant tooling |
-| Agent-E | 60% | 11 of 18 + publishing tools |
-| Agent-I | 35% | 6 of 18 |
+| Agent | Rate | Items | Equipped modules |
+|-------|------|-------|------------------|
+| Agent-A | 95% | 17/18 | Doctor, skill-evolution, policy-check, audit-analyzer, A2A, auto-remediation |
+| Agent-B | 90% | 16/18 | safe-write, Doctor, the coordination bus 3 reviewer |
+| Agent-C | 75% | 14/18 | Doctor, Reflexion, partial the coordination bus |
+| Agent-F | 75% | 14/18 | Doctor, Reflexion, scheduler |
+| Agent-H | 70% | 13/18 | 5 safety boundaries, R1–R4 (after v1.2) |
+| Agent-G | 65% | 12/18 | system monitoring |
+| Agent-D | 60% | 11/18 | quant tooling |
+| Agent-E | 60% | 11/18 | publishing tools |
+| Agent-I | 35% | 6/18 | (baseline only) |
 
 ### A.2 Reproducibility checklist
 
 | Item | Status | Path |
 |------|--------|------|
 | 5-pass sanity check script (model layer) | ✅ | `supplementary/vendored/.../OpenMythos/sanity_check.py` |
-| 5-pass sanity check script (coordination layer) | ✅ | the agent's private memory layer scripts (`sanity_check_v2.py`, anonymized path) |
+| 5-pass sanity check script (coordination layer) | ✅ | the agent's private memory layer scripts (`sanity_check_v2.py`) |
 | ICA mapping table | ✅ | Section 5.2 |
 | SkillDAG deployment code | ✅ | `supplementary/code/skill_registry/agent-framework/skill_dag.py` |
-| CADVP v1.1 implementation | ✅ | the agent's private library (`cadvp_v1_1.py`, anonymized path) |
+| CADVP v1.1 implementation | ✅ | the agent's private library (`cadvp_v1_1.py`) |
 | MLAS 25 checklist | ✅ | `agents/kadmiel/mlas_25.py` |
 | Teaching Claude Why SOUL update | ✅ | `agents/kimi/SOUL.md` v2.0 |
 | DCPM dual-process memory | ✅ | `agents/kadmiel/sleep_manager.py` |
@@ -818,7 +841,7 @@ Approximately 8 hours of MacBook Air time (M2, MPS backend) for sanity checks an
 
 ### A.5 Anonymization
 
-This paper is prepared for double-blind review at ICLR 2027. Author names and specific institutional paths are anonymized. The OpenMythos vendor is publicly cited (kyegomez, MIT license). Supplementary materials reference anonymized paths.
+Prepared for double-blind review at ICLR 2027. Author names and institutional paths anonymized. OpenMythos vendor publicly cited (MIT license).
 
 ---
 
