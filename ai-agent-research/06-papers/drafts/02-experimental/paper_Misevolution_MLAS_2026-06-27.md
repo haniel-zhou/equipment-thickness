@@ -3,8 +3,9 @@
 > **Authors**: Anonymous Authors¹
 > **Affiliations**: ¹ [Anonymized for double-blind review — see cover letter for venue-specific disclosure]
 > **Submission target**: ICLR 2026 Workshop on Agents (companion to the main Equipment Thickness Theory submission)
-> **Date**: 2026-06-27 (Draft v0.1)
+> **Date**: 2026-06-27 (Draft v0.1) → 2026-07-09 (v1.0)
 > **Status**: Pre-submission draft, double-blind, not for circulation
+> **Revision log**: v0.1 (2026-06-27): initial. v1.0 (2026-07-09): strict-mode hit rate updated to 60-case evaluation, 5/20 case ground-truth drift inspected and corrected where drift was confirmed (SR-006/007), no structural changes.
 > **Word count target**: ~5,000 words main paper (workshop short paper limit: 5-7 pages)
 > **Companion to**: *Equipment Thickness Theory* (ICLR 2027 Main submission, anony­mous)
 > **Code & data**: Open-source at the project repository (MIT-compatible); see reproducibility checklist in Appendix A.
@@ -229,6 +230,8 @@ The 1.1% `ask_user` FPR is non-trivial but acceptable: each `ask_user` decision 
 *[Figure 2 placeholder: line plot with x-axis = days from 2026-04-15 (0, 30, 60) and y-axis = MLAS cells (count of 25). Four series: full coverage (green ○, 0→0→2), partial coverage (gold □, 0→12→18), no coverage (red △, 25→13→5), critical-uncovered (purple ◇, 19→12→5).]*
 
 The figures are included in the supplementary material (PDF and PNG) and are also reproducible from the source script.
+
+**5.1 5/20 Case Curation Limitations.** Of the original 20 evaluation cases (SR-001..SR-020) that ground the 60-case semantic-recall strict-mode hit-rate measurement, 5 cases (SR-004, SR-006, SR-007, SR-009, SR-011) were inspected for ground-truth drift after the v0.1 draft. We retrieved the top-5 chunk_ids from each of the 6 retrieval modes and compared them against the case's `expected_source` (`learned.md` vs `lessons.jsonl`) and `expected_keywords`. Two of the five cases (SR-006 "anthropic teaching claude why misalignment" and SR-007 "skillDAG typed dependency 12.8 percent") had their `expected_source` pointing to the wrong file (the relevant chunk actually lives in the *other* file); we corrected these two `expected_source` fields in `equipment-thickness-repo/code/semantic_recall.py` and re-ran the 60-case strict-mode evaluation. Two cases (SR-004 "ICA model layer architecture 6 layers" and SR-009 "装备率量化协议 kappa inter-rater") were verified to have correct `expected_source` after inspection (the relevant chunks at learned.md §1925 and §1923 do exist at the named location). One case (SR-011 "CADVP v1.1 channel fracture 13 dimensions") has no `expected_source` chunk in the current v2.0 index (the index covers `learned.md` + `lessons.jsonl` + project reports; the canonical CADVP v1.1 lesson currently lives in `pending.md` line 287 and is outside the indexed corpus), so we did not edit `expected_source` — the case is retained for a future indexing pass. Post-correction, the 60-case strict-mode hit rates are: keyword 38/60 (63.33%), semantic 36/60 (60.00%), hybrid 38/60 (63.33%), semantic_v2 22/60 (36.67%), hybrid_v2 37/60 (61.67%), faiss 22/60 (36.67%). The semantic_v2 36.67% rate is the post-correction value used in the §7 defense-overhead narrative; the 5/20 inspection is the principal difference between v0.1 and v1.0. We discuss curation as an ongoing maintenance task rather than a one-time data preparation step: each new lesson added to `learned.md` or `lessons.jsonl` should be re-matched against the existing 60-case set, and each new evaluation case should be re-ground-truthed against the index before inclusion.
 
 ---
 
