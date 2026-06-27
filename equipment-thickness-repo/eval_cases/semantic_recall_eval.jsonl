@@ -1,0 +1,60 @@
+{"mode": "keyword", "case_id": "SR-001", "query": "DGM self-modifying agent safety", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-002", "query": "MLAS 25 attack surface critical", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-003", "query": "agent silent failure entropy principle", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-004", "query": "ICA model layer architecture 6 layers", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-005", "query": "Kimi Code CLI tool truncation M3", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-006", "query": "anthropic teaching claude why misalignment", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-007", "query": "skillDAG typed dependency 12.8 percent", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-008", "query": "NEXUS 5 bridge governance outcome", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-009", "query": "\u88c5\u5907\u7387\u91cf\u5316\u534f\u8bae kappa inter-rater", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-010", "query": "Phase 6 weekly eval harness scoreboard", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-011", "query": "CADVP v1.1 channel fracture 13 dimensions", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-012", "query": "misevolution stuck evolving agents", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-013", "query": "DCPM dual process memory sleep-time", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-014", "query": "MetaForge forge stage recycle skill library", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-015", "query": "Socratic-SWE SWE-bench 50.40 trace", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-016", "query": "MLEvolve MLE-Bench 12 hour budget", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-017", "query": "OpenSkill open world self evolution", "hit_top5": false}
+{"mode": "keyword", "case_id": "SR-018", "query": "Trust layer MCP A2A capability descriptor", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-019", "query": "\u88c5\u5907\u539a\u5ea6\u7406\u8bba L1 capability equivalence", "hit_top5": true}
+{"mode": "keyword", "case_id": "SR-020", "query": "consilium protocol BFT derived multi model", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-001", "query": "DGM self-modifying agent safety", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-002", "query": "MLAS 25 attack surface critical", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-003", "query": "agent silent failure entropy principle", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-004", "query": "ICA model layer architecture 6 layers", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-005", "query": "Kimi Code CLI tool truncation M3", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-006", "query": "anthropic teaching claude why misalignment", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-007", "query": "skillDAG typed dependency 12.8 percent", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-008", "query": "NEXUS 5 bridge governance outcome", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-009", "query": "\u88c5\u5907\u7387\u91cf\u5316\u534f\u8bae kappa inter-rater", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-010", "query": "Phase 6 weekly eval harness scoreboard", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-011", "query": "CADVP v1.1 channel fracture 13 dimensions", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-012", "query": "misevolution stuck evolving agents", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-013", "query": "DCPM dual process memory sleep-time", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-014", "query": "MetaForge forge stage recycle skill library", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-015", "query": "Socratic-SWE SWE-bench 50.40 trace", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-016", "query": "MLEvolve MLE-Bench 12 hour budget", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-017", "query": "OpenSkill open world self evolution", "hit_top5": false}
+{"mode": "semantic", "case_id": "SR-018", "query": "Trust layer MCP A2A capability descriptor", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-019", "query": "\u88c5\u5907\u539a\u5ea6\u7406\u8bba L1 capability equivalence", "hit_top5": true}
+{"mode": "semantic", "case_id": "SR-020", "query": "consilium protocol BFT derived multi model", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-001", "query": "DGM self-modifying agent safety", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-002", "query": "MLAS 25 attack surface critical", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-003", "query": "agent silent failure entropy principle", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-004", "query": "ICA model layer architecture 6 layers", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-005", "query": "Kimi Code CLI tool truncation M3", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-006", "query": "anthropic teaching claude why misalignment", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-007", "query": "skillDAG typed dependency 12.8 percent", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-008", "query": "NEXUS 5 bridge governance outcome", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-009", "query": "\u88c5\u5907\u7387\u91cf\u5316\u534f\u8bae kappa inter-rater", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-010", "query": "Phase 6 weekly eval harness scoreboard", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-011", "query": "CADVP v1.1 channel fracture 13 dimensions", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-012", "query": "misevolution stuck evolving agents", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-013", "query": "DCPM dual process memory sleep-time", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-014", "query": "MetaForge forge stage recycle skill library", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-015", "query": "Socratic-SWE SWE-bench 50.40 trace", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-016", "query": "MLEvolve MLE-Bench 12 hour budget", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-017", "query": "OpenSkill open world self evolution", "hit_top5": false}
+{"mode": "hybrid", "case_id": "SR-018", "query": "Trust layer MCP A2A capability descriptor", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-019", "query": "\u88c5\u5907\u539a\u5ea6\u7406\u8bba L1 capability equivalence", "hit_top5": true}
+{"mode": "hybrid", "case_id": "SR-020", "query": "consilium protocol BFT derived multi model", "hit_top5": false}

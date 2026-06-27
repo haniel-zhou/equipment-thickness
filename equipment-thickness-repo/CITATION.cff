@@ -1,0 +1,20 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: article
+title: "Equipment Thickness Theory: A Formal Model for Agent Capability Stacks"
+authors:
+  - family-names: "[Anonymized]"
+    given-names: "[For Double-Blind Review]"
+date-released: 2026-07-28
+keywords:
+  - multi-agent systems
+  - AI safety
+  - self-evolving agents
+  - skill graphs
+  - action policy
+  - model routing
+  - semantic memory
+license: MIT
+repository-code: "https://github.com/[anonymized]/equipment-thickness"
+doi: "10.5281/zenodo.[to-be-assigned]"
+version: "1.0.0"

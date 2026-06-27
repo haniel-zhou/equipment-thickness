@@ -1,0 +1,217 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Model Router Policy v1.0 (Phase 3 Codex 30-day sprint)",
+  "description": "Routes tasks to local vs cloud models based on task category, complexity, cost ceiling, and data sensitivity. Every routed call emits a decision_log entry with 10 fields for audit.",
+  "version": "1.0",
+  "date": "2026-06-29",
+  "default_route": {
+    "provider": "local",
+    "model": "MiniMax-M3",
+    "rationale": "Default to local for cost + data-locality. Override only on policy match."
+  },
+  "providers": {
+    "local": {
+      "models": ["MiniMax-M3", "MiniMax-M2.7", "qwen2.5-coder-7b"],
+      "cost_per_1k_tokens": 0.0,
+      "latency_p50_ms": 80,
+      "data_locality": "on-device",
+      "max_context_tokens": 32000
+    },
+    "anthropic": {
+      "models": ["claude-haiku-4.5", "claude-sonnet-4.6"],
+      "cost_per_1k_tokens": 0.0008,
+      "latency_p50_ms": 600,
+      "data_locality": "external",
+      "max_context_tokens": 200000
+    },
+    "openai": {
+      "models": ["gpt-5-mini", "gpt-4o-mini"],
+      "cost_per_1k_tokens": 0.0003,
+      "latency_p50_ms": 500,
+      "data_locality": "external",
+      "max_context_tokens": 128000
+    },
+    "google": {
+      "models": ["gemini-3-flash"],
+      "cost_per_1k_tokens": 0.0001,
+      "latency_p50_ms": 450,
+      "data_locality": "external",
+      "max_context_tokens": 1000000
+    }
+  },
+  "task_categories": {
+    "classification": {
+      "description": "Label assignment, routing decisions, simple categorization",
+      "preferred": "local",
+      "model": "MiniMax-M3",
+      "max_tokens": 2000,
+      "cost_ceiling_per_call_usd": 0.001
+    },
+    "summarization": {
+      "description": "Compress long text into short summaries",
+      "preferred": "local",
+      "model": "MiniMax-M3",
+      "max_tokens": 4000,
+      "cost_ceiling_per_call_usd": 0.005
+    },
+    "code_edit": {
+      "description": "Apply targeted edits to source files (search-and-replace, lint fixes)",
+      "preferred": "local",
+      "model": "qwen2.5-coder-7b",
+      "max_tokens": 8000,
+      "cost_ceiling_per_call_usd": 0.01
+    },
+    "code_generation": {
+      "description": "Write new code modules, scripts, agents",
+      "preferred": "local",
+      "model": "qwen2.5-coder-7b",
+      "max_tokens": 16000,
+      "cost_ceiling_per_call_usd": 0.05,
+      "fallback_to_cloud": true,
+      "cloud_threshold_complexity": 0.7
+    },
+    "architecture_review": {
+      "description": "Review designs, identify gaps, propose alternatives",
+      "preferred": "cloud",
+      "model": "claude-sonnet-4.6",
+      "max_tokens": 32000,
+      "cost_ceiling_per_call_usd": 0.50,
+      "fallback_to_cloud": true,
+      "reason": "Requires strong reasoning + long-context design critique"
+    },
+    "cron_diagnosis": {
+      "description": "Inspect cron logs, identify root cause, propose fix",
+      "preferred": "local",
+      "model": "MiniMax-M3",
+      "max_tokens": 8000,
+      "cost_ceiling_per_call_usd": 0.01
+    },
+    "policy_evaluation": {
+      "description": "Safety/policy decisions, action boundary checks, SOUL updates",
+      "preferred": "local",
+      "model": "MiniMax-M3",
+      "max_tokens": 4000,
+      "cost_ceiling_per_call_usd": 0.005,
+      "reason": "Must be on-device for data-locality + SOUL conformance"
+    },
+    "memory_recall": {
+      "description": "RAG over learned.md + shared lessons + project reports",
+      "preferred": "local",
+      "model": "MiniMax-M3",
+      "max_tokens": 4000,
+      "cost_ceiling_per_call_usd": 0.005
+    },
+    "research_synthesis": {
+      "description": "Multi-paper synthesis, citation graphs, theme extraction",
+      "preferred": "cloud",
+      "model": "gemini-3-flash",
+      "max_tokens": 100000,
+      "cost_ceiling_per_call_usd": 0.10,
+      "fallback_to_cloud": true,
+      "reason": "Long context (1M tokens) needed for full paper corpora"
+    },
+    "long_context_reasoning": {
+      "description": "Reasoning tasks with >32k tokens of context",
+      "preferred": "cloud",
+      "model": "gemini-3-flash",
+      "max_tokens": 1000000,
+      "cost_ceiling_per_call_usd": 0.20,
+      "fallback_to_cloud": true,
+      "reason": "Local max context is 32k; need 1M for codebases + papers"
+    }
+  },
+  "routing_rules": {
+    "rule_id_template": "{category}.{criterion}",
+    "rules": [
+      {
+        "rule_id": "code_generation.complexity_high_to_cloud",
+        "category": "code_generation",
+        "match": {"complexity_score_gte": 0.7, "min_loc_tokens": 16000},
+        "decision": "cloud",
+        "model": "claude-sonnet-4.6",
+        "priority": 800,
+        "reason": "High-complexity code generation routes to Sonnet for stronger reasoning"
+      },
+      {
+        "rule_id": "policy_evaluation.data_locality_force_local",
+        "category": "policy_evaluation",
+        "match": {"contains_pii_or_secret": true},
+        "decision": "local",
+        "model": "MiniMax-M3",
+        "priority": 990,
+        "reason": "Policy/SOUL evaluations with PII must stay on-device"
+      },
+      {
+        "rule_id": "all.cost_ceiling_exceeded_downgrade_local",
+        "category": "*",
+        "match": {"cost_ceiling_exceeded": true},
+        "decision": "local",
+        "model": "MiniMax-M3",
+        "priority": 950,
+        "reason": "Cost ceiling exceeded; degrade to local rather than abort"
+      },
+      {
+        "rule_id": "all.data_sensitivity_force_local",
+        "category": "*",
+        "match": {"data_classification": ["secret", "confidential"]},
+        "decision": "local",
+        "model": "MiniMax-M3",
+        "priority": 985,
+        "reason": "Sensitive data must not leave device"
+      },
+      {
+        "rule_id": "all.cold_start_default_local",
+        "category": "*",
+        "match": {"first_call_in_session": true},
+        "decision": "local",
+        "model": "MiniMax-M3",
+        "priority": 100,
+        "reason": "First call in session routes to local for fast iteration"
+      }
+    ]
+  },
+  "decision_log_schema": {
+    "log_id": "string (UUID v4)",
+    "timestamp": "ISO 8601 UTC",
+    "actor": "string (agent_id or 'human')",
+    "task_category": "string (one of task_categories keys)",
+    "input_tokens_estimate": "integer",
+    "output_tokens_estimate": "integer",
+    "complexity_score": "float in [0, 1]",
+    "data_classification": "string enum [public, internal, confidential, secret]",
+    "cost_ceiling_usd": "float",
+    "estimated_cost_usd": "float (estimated cost for the chosen route)",
+    "matched_rule_id": "string | null",
+    "decision_provider": "string (local | anthropic | openai | google)",
+    "decision_model": "string",
+    "decision_rationale": "string (human-readable)",
+    "fallback_chain": "array of {provider, model} (empty if no fallback)",
+    "actual_provider_used": "string (filled post-call)",
+    "actual_model_used": "string (filled post-call)",
+    "actual_cost_usd": "float (filled post-call)",
+    "latency_ms": "integer (filled post-call)",
+    "success": "bool (filled post-call)",
+    "error_class": "string | null (filled post-call)"
+  },
+  "audit_required": true,
+  "audit_log_path": "/Users/haniel/workspace/research/ai-agent-research/04-implementation/model-router/model_decision_log.jsonl",
+  "metrics": {
+    "track_local_ratio": true,
+    "track_cost_per_call_avg": true,
+    "track_rule_match_distribution": true,
+    "track_fallback_rate": true
+  },
+  "integration_points": [
+    "Kimi Code CLI model selection (Bash tool calls)",
+    "NEXUS dispatch (each dispatch emits a model_decision_log entry)",
+    "MCP wrapper (each MCP call routes through model_router)",
+    "A2A protocol (agents report which model they used for which sub-task)"
+  ],
+  "success_criteria_v1": [
+    "100% of routed calls emit decision_log entry",
+    "Local ratio >= 60% (cost + data-locality optimization)",
+    "Cost ceiling violations = 0 (or downgrade-to-local)",
+    "Data-sensitive calls to external = 0",
+    "Fallback rate < 5%"
+  ]
+}

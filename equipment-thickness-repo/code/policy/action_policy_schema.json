@@ -1,0 +1,199 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Action Boundary Policy v1.0 (Phase 2 Codex 30-day sprint)",
+  "description": "Schema for action boundary enforcement. Every high-impact local action (shell, git, A2A, MCP, fork) is evaluated against this schema BEFORE execution. Failure to match = ask_user; match against block rule = deny; match against allow rule + audit = allow.",
+  "version": "1.0",
+  "date": "2026-06-27",
+  "tier": {
+    "1": "default",
+    "2": "skill-attached",
+    "3": "workspace",
+    "4": "user",
+    "5": "admin"
+  },
+  "decision_priority_order": [
+    "5_admin",
+    "4_user",
+    "3_workspace",
+    "2_skill",
+    "1_default"
+  ],
+  "categories": {
+    "shell": {
+      "description": "Bash command evaluation",
+      "risk_levels": ["read", "write_local", "write_external", "destructive", "system"],
+      "default_decision": "ask_user",
+      "examples": {
+        "read": "ls, cat, grep on project files",
+        "write_local": "Write tool to project files",
+        "write_external": "curl POST to external API",
+        "destructive": "rm -rf, DROP TABLE, git reset --hard, force-push",
+        "system": "sudo, chmod 777, system install"
+      }
+    },
+    "git": {
+      "description": "Git operation evaluation",
+      "risk_levels": ["status", "commit", "branch", "merge", "reset", "force_push", "history_rewrite"],
+      "default_decision": "ask_user",
+      "examples": {
+        "status": "git status, git log, git diff",
+        "commit": "git commit -m '...'",
+        "branch": "git checkout -b, git switch",
+        "merge": "git merge --no-ff",
+        "reset": "git reset (mixed/soft OK; --hard requires approval)",
+        "force_push": "git push --force / --force-with-lease (always deny unless explicit)",
+        "history_rewrite": "git rebase, git filter-branch (always ask_user)"
+      }
+    },
+    "a2a": {
+      "description": "Agent-to-agent dispatch evaluation",
+      "risk_levels": ["read_inbox", "send_to_peer", "broadcast", "fork_subagent", "resume_external"],
+      "default_decision": "allow_with_audit",
+      "constraints": {
+        "max_fork_depth": 3,
+        "max_broadcast_recipients": 5,
+        "allowlist_agents": ["kimi", "sojourner", "ezra", "meridian", "kadmiel", "op", "morrow", "mint"]
+      }
+    },
+    "mcp": {
+      "description": "MCP server tool call evaluation",
+      "risk_levels": ["read", "write", "external_network", "state_mutation"],
+      "default_decision": "allow_with_audit",
+      "constraints": {
+        "idle_timeout_seconds": 30,
+        "max_concurrent_calls": 4,
+        "hung_call_action": "abort_and_record_outcome"
+      }
+    },
+    "fork": {
+      "description": "Subagent forking",
+      "risk_levels": ["read_only_subagent", "write_subagent", "external_subagent"],
+      "default_decision": "ask_user",
+      "constraints": {
+        "max_fork_depth": 2,
+        "max_total_subagents": 4,
+        "must_inherit_parent_soul": true
+      }
+    }
+  },
+  "rule_schema": {
+    "rule_id": "string (e.g., shell.destructive.git_force_push)",
+    "category": "shell | git | a2a | mcp | fork",
+    "match": {
+      "command_prefix": "string (e.g., 'git push')",
+      "args_pattern": "string (regex, e.g., '--force|--force-with-lease')",
+      "path_prefix": "string (e.g., '/Users/haniel/workspace/')",
+      "context": "object (e.g., {'has_human_approval': true})"
+    },
+    "decision": "allow | ask_user | deny",
+    "priority": "integer (1-1000, higher = evaluated first)",
+    "tier": "1-5 (see tier table)",
+    "reason": "string (human-readable explanation)"
+  },
+  "example_rules_v1": [
+    {
+      "rule_id": "shell.destructive.rm_rf_root",
+      "category": "shell",
+      "match": {"command_prefix": "rm", "args_pattern": "(\\s|^)-r(f)?\\s+/(\\s|$)"},
+      "decision": "deny",
+      "priority": 990,
+      "tier": 1,
+      "reason": "rm -rf / would destroy system. Always deny."
+    },
+    {
+      "rule_id": "shell.destructive.rm_rf_workspace",
+      "category": "shell",
+      "match": {"command_prefix": "rm", "args_pattern": "(\\s|^)-r(f)?\\s+(/Users|/tmp|/var|/etc)"},
+      "decision": "ask_user",
+      "priority": 950,
+      "tier": 1,
+      "reason": "rm -rf on sensitive paths (/Users, /tmp, /var, /etc) requires user confirmation."
+    },
+    {
+      "rule_id": "git.destructive.force_push_any",
+      "category": "git",
+      "match": {"command_prefix": "git push", "args_pattern": "(\\s|^)(--force|--force-with-lease|-f)(\\s|$)"},
+      "decision": "ask_user",
+      "priority": 950,
+      "tier": 1,
+      "reason": "git push --force is destructive. Always require user confirmation."
+    },
+    {
+      "rule_id": "git.destructive.force_push_main_branch",
+      "category": "git",
+      "match": {"command_prefix": "git push", "args_pattern": "(^|\\s)(origin|upstream)\\s+(main|master|production)(\\s|$)"},
+      "decision": "deny",
+      "priority": 980,
+      "tier": 1,
+      "reason": "Push to main/master/production is blocked by branch protection. Always deny."
+    },
+    {
+      "rule_id": "git.destructive.reset_hard",
+      "category": "git",
+      "match": {"command_prefix": "git reset", "args_pattern": "(\\s|^)--hard(\\s|$)"},
+      "decision": "ask_user",
+      "priority": 900,
+      "tier": 1,
+      "reason": "git reset --hard is destructive. Require user confirmation."
+    },
+    {
+      "rule_id": "git.history_rewrite.rebase",
+      "category": "git",
+      "match": {"command_prefix": "git rebase", "args_pattern": ".*"},
+      "decision": "ask_user",
+      "priority": 850,
+      "tier": 1,
+      "reason": "git rebase rewrites history. Require user confirmation."
+    },
+    {
+      "rule_id": "a2a.broadcast_to_all",
+      "category": "a2a",
+      "match": {"command_prefix": "a2a.send", "args_pattern": "(recipients=([^,]+,){5,}|broadcast=true)"},
+      "decision": "ask_user",
+      "priority": 700,
+      "tier": 1,
+      "reason": "Broadcast to all agents (>5 recipients) or explicit broadcast=true requires confirmation."
+    },
+    {
+      "rule_id": "a2a.fork_depth_too_deep",
+      "category": "a2a",
+      "match": {"command_prefix": "a2a.fork", "args_pattern": "depth=([4-9]|[1-9][0-9]+)"},
+      "decision": "deny",
+      "priority": 920,
+      "tier": 1,
+      "reason": "Fork depth >3 violates Codex 30-day sprint cap. Always deny."
+    },
+    {
+      "rule_id": "mcp.hung_call",
+      "category": "mcp",
+      "match": {"command_prefix": "mcp.call", "args_pattern": "idle_seconds=([3-9][0-9]|[1-9][0-9]{2,})"},
+      "decision": "abort_and_record",
+      "priority": 800,
+      "tier": 1,
+      "reason": "MCP call idle >30s: abort and record outcome as failure_class=tool_error."
+    },
+    {
+      "rule_id": "shell.write_local.kimi_workspace_safe",
+      "category": "shell",
+      "match": {"command_prefix": "Write", "path_prefix": "/Users/haniel/workspace/research/ai-agent-research/"},
+      "decision": "allow_with_audit",
+      "priority": 100,
+      "tier": 3,
+      "reason": "Writing within current research workspace is allowed with audit trail."
+    }
+  ],
+  "audit_required": true,
+  "audit_log_path": "/Users/haniel/workspace/research/ai-agent-research/04-implementation/policy/action_policy_audit.jsonl",
+  "integration_points": [
+    "NEXUS dispatch (every dispatch pre-checked against a2a rules)",
+    "Mythos adapter (cross-layer dispatch inherits rules)",
+    "Kimi Code CLI Bash wrapper (shell + git rules pre-eval)",
+    "MCP sandbox (mcp.hung_call auto-abort)"
+  ],
+  "next_steps_phase2": [
+    "Implement action_policy_check.py: evaluate(decision_request) → decision + matched_rule + audit_entry",
+    "Dry-run integration with NEXUS dispatch for 1 week (no enforcement, only audit)",
+    "Build 10-20 eval cases for action_policy_check.py",
+    "Integrate with Kimi Code CLI Bash wrapper as pre-flight check"
+  ]
+}
