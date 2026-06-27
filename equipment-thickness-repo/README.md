@@ -1,5 +1,17 @@
 # Equipment Thickness Theory — Open Source Repository
 
+<!--
+  Badges note (2026-06-27):
+  - License badge: real (LICENSE file is MIT, verified)
+  - Status badge: self-declared, no external dependency
+  - DOI badge: PENDING — repo has no Zenodo DOI yet (paper not submitted); uncomment after Zenodo assignment
+  - Code style / Tests badge: PENDING — no pyproject.toml / CI in this worktree; do not add until infrastructure exists
+-->
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Status: Research Artifact](https://img.shields.io/badge/status-research%20artifact-blueviolet)
+<!-- [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.XXXXXXX.svg)](https://doi.org/10.5281/zenodo.XXXXXXX) -->
+
 > **Paper**: *Equipment Thickness Theory: A Formal Model for Agent Capability Stacks*
 > **Authors**: [Anonymized for double-blind review]
 > **Venue**: ICLR 2027 Main (primary submission, 2026-09-25)

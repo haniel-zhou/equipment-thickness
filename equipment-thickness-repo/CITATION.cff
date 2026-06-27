@@ -5,7 +5,7 @@ title: "Equipment Thickness Theory: A Formal Model for Agent Capability Stacks"
 authors:
   - family-names: "[Anonymized]"
     given-names: "[For Double-Blind Review]"
-date-released: 2026-07-28
+date-released: 2026-06-27
 keywords:
   - multi-agent systems
   - AI safety
@@ -18,3 +18,21 @@ license: MIT
 repository-code: "https://github.com/[anonymized]/equipment-thickness"
 doi: "10.5281/zenodo.[to-be-assigned]"
 version: "1.0.0"
+abstract: >-
+  This repository is the open-source artifact for the paper
+  "Equipment Thickness Theory: A Formal Model for Agent Capability Stacks"
+  (ICLR 2027 Main submission, 2026-09-25). It contributes (1) a SkillDAG
+  of 207 agent skills connected by 159 typed edges in 6 categories, used
+  to measure the structural complexity of multi-agent systems; (2) an
+  Action Policy Check module implementing 10 rules across 5 categories
+  with 3 decision levels (allow / ask / deny); (3) a Model Router
+  supporting 4 LLM providers across 10 task categories with a 5-rule
+  cost-aware selection policy and a 20-field audit log; (4) a Semantic
+  Recall module indexing 361 memory chunks under 3 query modes (keyword,
+  semantic, hybrid); and (5) a 35-case weekly evaluation harness
+  spanning 7 categories. Reproducing the full sweep takes approximately
+  30 seconds on a single MacBook Air with no GPU. The artifact
+  accompanies the double-blind submission; author names and a permanent
+  Zenodo DOI will be added at acceptance. The companion workshop paper
+  ("Misevolution in Practice: A 2-Month Empirical Study") shares these
+  artifacts and adds a 25-item MLAS checklist runner with 20 test cases.
