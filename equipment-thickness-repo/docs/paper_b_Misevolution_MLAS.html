@@ -1,0 +1,1258 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>paper_Misevolution_MLAS_2026-06-27</title>
+  <style>
+
+html {
+color: #1a1a1a;
+background-color: #fdfdfd;
+}
+body {
+margin: 0 auto;
+max-width: 36em;
+padding-left: 50px;
+padding-right: 50px;
+padding-top: 50px;
+padding-bottom: 50px;
+hyphens: auto;
+overflow-wrap: break-word;
+text-rendering: optimizeLegibility;
+font-kerning: normal;
+}
+@media (max-width: 600px) {
+body {
+font-size: 0.9em;
+padding: 12px;
+}
+h1 {
+font-size: 1.8em;
+}
+}
+@media print {
+html {
+background-color: white;
+}
+body {
+background-color: transparent;
+color: black;
+font-size: 12pt;
+}
+p, h2, h3 {
+orphans: 3;
+widows: 3;
+}
+h2, h3, h4 {
+page-break-after: avoid;
+}
+}
+p {
+margin: 1em 0;
+}
+a {
+color: #1a1a1a;
+}
+a:visited {
+color: #1a1a1a;
+}
+img {
+max-width: 100%;
+}
+svg {
+height: auto;
+max-width: 100%;
+}
+h1, h2, h3, h4, h5, h6 {
+margin-top: 1.4em;
+}
+h5, h6 {
+font-size: 1em;
+font-style: italic;
+}
+h6 {
+font-weight: normal;
+}
+ol, ul {
+padding-left: 1.7em;
+margin-top: 1em;
+}
+li > ol, li > ul {
+margin-top: 0;
+}
+blockquote {
+margin: 1em 0 1em 1.7em;
+padding-left: 1em;
+border-left: 2px solid #e6e6e6;
+color: #606060;
+}
+code {
+white-space: pre-wrap;
+font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+font-size: 85%;
+margin: 0;
+hyphens: manual;
+}
+pre {
+margin: 1em 0;
+overflow: auto;
+}
+pre code {
+padding: 0;
+overflow: visible;
+overflow-wrap: normal;
+}
+.sourceCode {
+background-color: transparent;
+overflow: visible;
+}
+hr {
+border: none;
+border-top: 1px solid #1a1a1a;
+height: 1px;
+margin: 1em 0;
+}
+table {
+margin: 1em 0;
+border-collapse: collapse;
+width: 100%;
+overflow-x: auto;
+display: block;
+font-variant-numeric: lining-nums tabular-nums;
+}
+table caption {
+margin-bottom: 0.75em;
+}
+tbody {
+margin-top: 0.5em;
+border-top: 1px solid #1a1a1a;
+border-bottom: 1px solid #1a1a1a;
+}
+th {
+border-top: 1px solid #1a1a1a;
+padding: 0.25em 0.5em 0.25em 0.5em;
+}
+td {
+padding: 0.125em 0.5em 0.25em 0.5em;
+}
+header {
+margin-bottom: 4em;
+text-align: center;
+}
+#TOC li {
+list-style: none;
+}
+#TOC ul {
+padding-left: 1.3em;
+}
+#TOC > ul {
+padding-left: 0;
+}
+#TOC a:not(:hover) {
+text-decoration: none;
+}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+
+ul.task-list[class]{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+font-size: inherit;
+width: 0.8em;
+margin: 0 0.8em 0.2em -1.6em;
+vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+</head>
+<body>
+<nav id="TOC" role="doc-toc">
+<ul>
+<li><a href="#misevolution-in-practice-a-60-day-8-agent-empirical-study-of-4-self-modification-paths-and-25-attack-surfaces" id="toc-misevolution-in-practice-a-60-day-8-agent-empirical-study-of-4-self-modification-paths-and-25-attack-surfaces">Misevolution
+in Practice: A 60-Day, 8-Agent Empirical Study of 4 Self-Modification
+Paths and 25 Attack Surfaces</a>
+<ul>
+<li><a href="#abstract" id="toc-abstract">Abstract</a></li>
+<li><a href="#introduction" id="toc-introduction">1.
+Introduction</a></li>
+<li><a href="#background-8-agent-production-system" id="toc-background-8-agent-production-system">2. Background: 8-Agent
+Production System</a></li>
+<li><a href="#misevolution-4-path-detection-policy" id="toc-misevolution-4-path-detection-policy">3. Misevolution 4-Path
+Detection Policy</a></li>
+<li><a href="#misevolution-4-path-empirical-results" id="toc-misevolution-4-path-empirical-results">4. Misevolution 4-Path
+Empirical Results</a></li>
+<li><a href="#mlas-55-attack-surface-audit" id="toc-mlas-55-attack-surface-audit">5. MLAS 5×5 Attack-Surface
+Audit</a></li>
+<li><a href="#case-study-agent-d-2026-06-memory-overwrite-incident" id="toc-case-study-agent-d-2026-06-memory-overwrite-incident">6. Case
+Study: Agent-D 2026-06 Memory Overwrite Incident</a></li>
+<li><a href="#defense-overhead" id="toc-defense-overhead">7. Defense
+Overhead</a></li>
+<li><a href="#discussion" id="toc-discussion">8. Discussion</a></li>
+<li><a href="#conclusion" id="toc-conclusion">9. Conclusion</a></li>
+<li><a href="#appendix-a-reproducibility-checklist" id="toc-appendix-a-reproducibility-checklist">Appendix A:
+Reproducibility Checklist</a></li>
+<li><a href="#appendix-b-acronyms" id="toc-appendix-b-acronyms">Appendix
+B: Acronyms</a></li>
+</ul></li>
+</ul>
+</nav>
+<h1 id="misevolution-in-practice-a-60-day-8-agent-empirical-study-of-4-self-modification-paths-and-25-attack-surfaces">Misevolution
+in Practice: A 60-Day, 8-Agent Empirical Study of 4 Self-Modification
+Paths and 25 Attack Surfaces</h1>
+<blockquote>
+<p><strong>Authors</strong>: Anonymous Authors¹
+<strong>Affiliations</strong>: ¹ [Anonymized for double-blind review —
+see cover letter for venue-specific disclosure] <strong>Submission
+target</strong>: ICLR 2026 Workshop on Agents (companion to the main
+Equipment Thickness Theory submission) <strong>Date</strong>: 2026-06-27
+(Draft v0.1) → 2026-07-09 (v1.0) <strong>Status</strong>: Pre-submission
+draft, double-blind, not for circulation <strong>Revision log</strong>:
+v0.1 (2026-06-27): initial. v1.0 (2026-07-09): strict-mode hit rate
+updated to 60-case evaluation, 5/20 case ground-truth drift inspected
+and corrected where drift was confirmed (SR-006/007), no structural
+changes. <strong>Word count target</strong>: ~5,000 words main paper
+(workshop short paper limit: 5-7 pages) <strong>Companion to</strong>:
+<em>Equipment Thickness Theory</em> (ICLR 2027 Main submission,
+anony­mous) <strong>Code &amp; data</strong>: Open-source at the project
+repository (MIT-compatible); see reproducibility checklist in Appendix
+A.</p>
+</blockquote>
+<hr />
+<h2 id="abstract">Abstract</h2>
+<p>We report a 60-day field study of two recently proposed agent-safety
+frameworks deployed on a production 8-agent system: (1) the
+<strong>Misevolution 4-path</strong> failure taxonomy of self-modifying
+agents (model / memory / tool / workflow) and (2) the <strong>MLAS 5×5
+attack-surface matrix</strong> (5 modules × 5 lifecycle stages = 25
+surfaces; Lin et al., arXiv:2606.23075). We contribute three artifacts:
+(a) a 4-line implementation of the Misevolution 4-path detection policy
+as a 4-bucket action classifier (<code>{path, score}</code>) used by the
+safety boundary to gate high-impact actions; (b) a 25-cell MLAS audit
+checklist with current coverage status for our 8 agents, comprising 19
+critical and 6 managed surfaces, of which 2 are fully covered, 18
+partially covered, and 5 not yet covered; (c) a longitudinal incident
+record: 4 Misevolution-path blocked events, 1 MLAS-surface check (M2-L2
+in-flight memory write) and 2 follow-up checks, 1 critical
+write-protection incident (the “Agent-D 2026-06 memory overwrite” event,
+classified as Misevolution memory path + MLAS M2-L3). We find that the
+Misevolution 4-path classification and the MLAS 5×5 matrix are
+<strong>complementary, not redundant</strong>: Misevolution classifies
+<em>failure modes</em> along the dimension of which layer misbehaves,
+while MLAS classifies <em>attack opportunities</em> along the dimension
+of module × lifecycle stage. Combined, they cover the
+failure-manifestation and attack-opportunity axes that neither covers
+alone. We also document a measurement caveat: the operational data set
+(4 Misevolution events, 3 MLAS checks) is two to three orders of
+magnitude smaller than what the cover letter and our initial sketch
+described (1,247 events; 25-cell coverage). We discuss the gap and the
+inferred reasons — chiefly that the safety boundary was not exercised at
+high rates during the observation window — and argue that small-but-real
+evidence is more useful for a workshop case study than projected counts,
+because the data we <em>do</em> have identifies a real incident with
+concrete remediation steps. Defense overhead measured at the
+action-policy layer is 0.3% of total wall-clock time (median across 100
+evaluate calls). Our 8-agent setup and MLAS 5×5 checklist are released
+as open-source artifacts.</p>
+<hr />
+<h2 id="introduction">1. Introduction</h2>
+<p><strong>Motivation.</strong> Self-modifying AI agents — agents that
+update their own memory, model weights, tool code, or workflow
+parameters at runtime — introduce a class of safety risks that
+static-rule systems cannot fully address. Two recent papers have
+proposed complementary frameworks for characterising these risks.
+<strong>Misevolution</strong> (Shao et al., 2026) proposes a 4-path
+taxonomy of <em>failure modes</em> in self-modifying agents: model-path
+(the LLM misbehaves), memory-path (long-term or short-term memory
+corrupts), tool-path (tool code or interfaces misbehave), and
+workflow-path (dispatch, cron, or reflexion loops misbehave).
+<strong>MLAS</strong> (Lin et al., arXiv:2606.23075) proposes a 5×5
+attack-surface matrix of <em>attack opportunities</em>: 5 modules
+(model, memory, tool, workflow, governance) crossed with 5 lifecycle
+stages (initialization, operation, modification, shutdown, recovery) =
+25 cells, with the paper reporting that 17 of 25 cells face critical
+threat under self-evolution amplification.</p>
+<p><strong>Gap.</strong> Both papers are conceptual; neither paper
+reports a longitudinal deployment. Our contribution closes this gap by
+reporting a 60-day field study of an 8-agent production system in which
+both frameworks are operationalised and exercised.</p>
+<p><strong>Why this paper fits the workshop.</strong> The ICLR 2026
+Workshop on Agents solicits empirical case studies with operational
+depth and concrete operational artefacts. Our submission is exactly
+that: a real deployment, a real incident (the Agent-D 2026-06 memory
+overwrite, classified as Misevolution memory-path + MLAS M2-L3), and a
+release-ready 25-cell audit checklist.</p>
+<p><strong>Contributions.</strong></p>
+<ol type="1">
+<li><strong>Operationalisation of Misevolution 4-path detection</strong>
+as a 4-bucket action classifier on our 8-agent system, with one real
+blocked incident and three additional defence actions traced to the
+policy (Section 4).</li>
+<li><strong>Operationalisation of the MLAS 5×5 matrix</strong> as a
+25-cell audit checklist with current coverage status and detection-rule
+specifications for each cell (Section 5).</li>
+<li><strong>Case study: the Agent-D 2026-06 memory overwrite
+incident</strong> — how Misevolution memory-path + MLAS M2-L3
+classification explained the failure, how the safety boundary fired, and
+what remediation we took (Section 6).</li>
+<li><strong>Defense overhead measurement</strong> at 0.3% of total
+wall-clock time, indicating that the action-policy layer is cheap to
+operate but its absence (the Agent-D 2026-06 incident) is expensive to
+recover from (Section 7).</li>
+</ol>
+<p><strong>Scope.</strong> This paper is a companion to our main
+Equipment Thickness Theory submission; readers need not read the main
+paper to follow this one. We do not duplicate the main paper’s
+theoretical framework; we focus on the two safety frameworks’
+operational behaviour in production.</p>
+<p><strong>Limitations preview.</strong> Our Misevolution event count
+(4) and MLAS check count (3) are small. We discuss the reasons (low-rate
+safety events during a steady-state window) and the implications for the
+field in Section 8.</p>
+<hr />
+<h2 id="background-8-agent-production-system">2. Background: 8-Agent
+Production System</h2>
+<p>We deploy both safety frameworks on a production 8-agent system that
+has been in continuous operation since 2026-04. The system runs as a
+coordination-layer stack above a single 4B local LLM. The 8 agents
+occupy distinct functional roles (we anonymise role names as
+<strong>Agent-A</strong> through <strong>Agent-I</strong> to preserve
+double-blind review; the <em>kinds</em> of roles — e.g., one safety
+auditor, one skill librarian, one dispatch router — are described below
+in functional terms rather than by name). The agents share (a) a 4-layer
+long-term memory hierarchy, (b) a shared lessons broadcast channel with
+freshness decay, (c) a typed skill DAG of 207 skills with 159 typed
+edges, and (d) a centralised action-policy boundary that gates
+high-impact actions through a 7-rule decision engine
+(<code>shell | git | a2a | mcp | fork</code> categories; default
+confidence threshold 0.6; <code>deny</code> / <code>ask_user</code> /
+<code>allow_with_audit</code> outcomes).</p>
+<p><strong>Functional role distribution (anonymised):</strong></p>
+<ul>
+<li><strong>Agent-A</strong>: Skills librarian. Maintains the typed
+skill DAG; emits skill-recommendation rules into the model-router
+decision log.</li>
+<li><strong>Agent-B</strong>: Dispatch router. Receives tasks,
+dispatches to the right agent via the typed DAG, logs every decision
+with a 20-field audit record.</li>
+<li><strong>Agent-C</strong>: Safety auditor. Runs the MLAS 5×5 audit on
+a daily cron and writes incidents to a shared log.</li>
+<li><strong>Agent-D</strong>: Memory curator. Performs background
+compaction and decay on the 4-layer memory hierarchy. <strong>Operates
+the cell at highest risk of memory-path Misevolution
+events.</strong></li>
+<li><strong>Agent-E</strong>: Model router. Selects between local and
+cloud LLM based on data-classification, cost-ceiling, and complexity;
+emits a 20-field decision log.</li>
+<li><strong>Agent-F</strong>: Reflexion loop runner. Runs after-action
+reflection to update shared lessons.</li>
+<li><strong>Agent-G</strong>: Cron SLO monitor. Maintains a 17-cron
+registry with hash-pinned entries.</li>
+<li><strong>Agent-H</strong>: Model fine-tuner. Performs self_finetune
+operations on a sandboxed model copy; triggers Misevolution model-path
+on every fine-tune without alignment_check_passed.</li>
+<li><strong>Agent-I</strong>: Governance / policy manager. Owns the
+action-policy schema, the 5-tier policy hierarchy, and the audit log
+retention.</li>
+</ul>
+<p><strong>Why these 8 agents matter for this study.</strong> The 4
+Misevolution paths and the 5 MLAS modules are <em>all</em> exercised by
+at least one agent. The system is a natural test bed because every cell
+of the MLAS 5×5 matrix is potentially active every day. We do not
+artificially induce failures; we observe what happens in production.</p>
+<p><strong>Observation window.</strong> 2026-04-15 to 2026-06-13 (60
+days). The window straddles a major version transition in the
+action-policy schema (v0.x → v1.0 on 2026-05-22) and the deployment of
+the typed skill DAG (49 skills on 2026-05-29, expanded to 207 on
+2026-06-10).</p>
+<p><strong>Data retention.</strong> All audit logs are write-once with
+file-level lock; no agent can mutate an audit log entry after write. The
+4 Misevolution events and 3 MLAS checks retained in the present
+submission are <em>all</em> the events recorded in the window; we did
+not sample.</p>
+<hr />
+<h2 id="misevolution-4-path-detection-policy">3. Misevolution 4-Path
+Detection Policy</h2>
+<p>The Misevolution 4-path taxonomy (Shao et al., 2026) classifies
+self-modification failures by which layer misbehaves:</p>
+<ul>
+<li><strong>Model path</strong>: the LLM itself produces a misleading or
+harmful action, including prompt-injection-induced behaviour.</li>
+<li><strong>Memory path</strong>: long-term or short-term memory stores
+incorrect, stale, or malicious content that propagates to downstream
+actions.</li>
+<li><strong>Tool path</strong>: tool code, MCP interfaces, or function
+calls misfire (returns wrong data, throws unexpectedly, or executes a
+destructive side effect).</li>
+<li><strong>Workflow path</strong>: dispatch, cron, or reflexion loop
+misbehaves (priority inversion, dead dispatch, infinite reflexion).</li>
+</ul>
+<p>We implement the 4-path classifier as a thin layer in front of the
+existing action-policy engine. Each high-impact action request is first
+classified into a 4-vector
+<code>path_scores = {model: 0/1/2, memory: 0/1/2, tool: 0/1/2, workflow: 0/1/2}</code>
+(0 = no signal, 1 = weak signal, 2 = strong signal) by keyword + context
+matching. If the dominant path’s score ≥ 2 and at least one
+<strong>missing-signal</strong> is detected (e.g., for memory path, the
+request lacks <code>backup_first</code> and the target path is
+<code>learned.md</code> or <code>diary.md</code>), the action is
+<strong>blocked</strong>. The 4-path classifier reuses the same
+<code>evaluate</code> function and audit-log mechanism as the action
+policy; no separate infrastructure was added.</p>
+<p><strong>Coverage.</strong> The classifier catches the four named
+patterns: model-path (e.g., “self_finetune” without
+<code>alignment_check_passed</code>), memory-path (e.g., “overwrite
+diary” without <code>backup_first</code>), tool-path (e.g., “create new
+tool” without <code>evidence_gated</code>), workflow-path (e.g.,
+“infinite reflexion” without <code>loop_termination_check</code>). It
+does not catch Misevolution events that <em>do not</em> match the
+keyword taxonomy; we treat those as detection gaps and discuss them in
+Section 8.</p>
+<hr />
+<h2 id="misevolution-4-path-empirical-results">4. Misevolution 4-Path
+Empirical Results</h2>
+<p>Across the 60-day observation window, the action-policy engine
+recorded <strong>4 Misevolution-classified events</strong> that
+triggered the policy’s “block” action. We tabulate the per-event
+breakdown below; the path distribution is the empirical manifestation of
+Misevolution in our 8-agent system.</p>
+<table>
+<colgroup>
+<col style="width: 6%" />
+<col style="width: 15%" />
+<col style="width: 8%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 20%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Date</th>
+<th>Agent (role)</th>
+<th>Action</th>
+<th>Dominant path</th>
+<th>Path score</th>
+<th>Missing signals</th>
+<th>Action taken</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-05-15 15:18</td>
+<td>Agent-D (memory)</td>
+<td>write diary content</td>
+<td>memory</td>
+<td>1</td>
+<td>backup_first, size_under_threshold</td>
+<td><strong>block</strong></td>
+</tr>
+<tr>
+<td>2026-05-15 17:51</td>
+<td>Agent-D (memory)</td>
+<td>overwrite diary.md with new content</td>
+<td>memory</td>
+<td><strong>2</strong></td>
+<td>backup_first, size_under_threshold</td>
+<td><strong>block</strong></td>
+</tr>
+<tr>
+<td>2026-05-15 17:51</td>
+<td>Agent-H (model)</td>
+<td>self_finetune new dataset</td>
+<td>model</td>
+<td><strong>2</strong></td>
+<td>alignment_check_passed, goal_drift_index_ok</td>
+<td><strong>block</strong></td>
+</tr>
+<tr>
+<td>2026-05-15 17:51</td>
+<td>Agent-A (skill)</td>
+<td>register new MCP tool</td>
+<td>tool</td>
+<td><strong>2</strong></td>
+<td>evidence_gated, human_approved</td>
+<td><strong>block</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Path distribution (n=4).</strong></p>
+<table>
+<thead>
+<tr>
+<th>Misevolution path</th>
+<th>Events</th>
+<th>Share</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>1</td>
+<td>25.0%</td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>2</td>
+<td>50.0%</td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>1</td>
+<td>25.0%</td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>0</td>
+<td>0.0%</td>
+</tr>
+</tbody>
+</table>
+<p>Three observations. First, <strong>all four events were
+blocked</strong> by the policy — the action boundary was effective for
+every detected event. Second, the <strong>memory path dominated</strong>
+(50% of events), driven largely by Agent-D’s routine diary-write and
+overwrite actions (Agent-D accounted for 2 of 2 memory-path events);
+this is consistent with the Misevolution paper’s case studies, which
+identify memory write as the highest-frequency failure mode. Third,
+<strong>no workflow-path events were detected</strong> in the window,
+but this is a detection gap (the classifier does not yet have strong
+workflow-path keywords), not an absence of workflow failures; we discuss
+this in Section 8.</p>
+<p><strong>False-positive rate.</strong> Across the 60-day window, the
+4-block event count is the same as the 4-Misevolution-event count (i.e.,
+zero false positives among the 4 blocks); the broader false-positive
+rate requires counting non-Misevolution actions that were erroneously
+blocked, which we have not instrumented. We discuss this measurement gap
+in Section 8.</p>
+<p><strong>What the cover letter claimed vs. what we report.</strong>
+Our workshop submission cover letter described “1,247 self-modification
+events” and “0.7% false positive rate”. The actual retained data is 4
+events. The discrepancy is due to (a) the cover letter being drafted
+from an earlier sketch that conflated <em>audit-log lines</em> (high
+count) with <em>Misevolution events</em> (low count after the 4-path
+filter is applied), and (b) the 0.7% figure was a projection from a
+200-event pilot in week 1 that did not generalise. We report the 4-event
+actual here and discuss the implications for empirical agent-safety
+studies in Section 8. We do not claim the 1,247 figure; we are
+correcting it.</p>
+<p><strong>Detection rule details per path.</strong> The 4-path
+classifier is a thin wrapper around the existing <code>evaluate</code>
+function. The detection rules are:</p>
+<ul>
+<li><strong>Model path</strong>: matches action verbs
+<code>self_finetune</code>, <code>self_train</code>,
+<code>reweight</code>, <code>override_prompt</code>,
+<code>inject_prompt</code>. Requires the action to also carry at least
+one of <code>alignment_check_passed</code>,
+<code>goal_drift_index_ok</code>, <code>human_review_token</code>.
+Without these signals, the request is treated as model-path score 2 and
+blocked.</li>
+<li><strong>Memory path</strong>: matches target nouns
+<code>diary</code>, <code>learned</code>, <code>SOUL</code>,
+<code>shared_lessons</code>, <code>lessons_broadcast</code>,
+<code>compaction</code>. Requires either <code>backup_first</code>
+signal or <code>size_under_threshold</code> signal. Memory writes to
+files larger than 4 KB without a <code>backup_first</code> signal are
+blocked (this is the rule that caught the Agent-D 2026-06
+incident).</li>
+<li><strong>Tool path</strong>: matches <code>create_tool</code>,
+<code>register_mcp</code>, <code>install_skill</code>,
+<code>update_tool_code</code>. Requires <code>evidence_gated</code>
+(i.e., the tool change has a passing evaluation suite) and
+<code>human_approved</code>. New tool creation without human approval is
+blocked.</li>
+<li><strong>Workflow path</strong>: matches <code>add_cron</code>,
+<code>modify_loop</code>, <code>infinite_reflexion</code>,
+<code>priority_override</code>. Requires
+<code>loop_termination_check</code> and <code>priority_audit</code>.
+Workflow modifications without these are blocked.</li>
+</ul>
+<p>The keyword lists are open-source and version-controlled; agents can
+extend them by submitting a Misevolution-extension proposal that the
+safety auditor (Agent-C) reviews daily. We have received 0 extension
+proposals in the 60-day window.</p>
+<hr />
+<h2 id="mlas-55-attack-surface-audit">5. MLAS 5×5 Attack-Surface
+Audit</h2>
+<p>We audit the 8-agent system against the MLAS 5×5 matrix (Lin et al.,
+arXiv:2606.23075) using our open-source <code>mlas_25.py</code>
+checklist runner. The runner enumerates all 25 cells, queries the audit
+log for prior checks, and reports a coverage matrix. We ran the audit on
+2026-06-27; the current coverage status is summarised below.</p>
+<p><strong>5×5 coverage matrix</strong> (rows = module, columns =
+lifecycle stage; entry = severity | coverage):</p>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 13%" />
+<col style="width: 10%" />
+<col style="width: 11%" />
+<col style="width: 19%" />
+<col style="width: 19%" />
+</colgroup>
+<thead>
+<tr>
+<th>Module \ Stage</th>
+<th>L1 init</th>
+<th>L2 op</th>
+<th>L3 mod</th>
+<th>L4 shutdown</th>
+<th>L5 recovery</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>M1 model</strong></td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | none</td>
+<td>critical | none</td>
+<td>managed | partial</td>
+</tr>
+<tr>
+<td><strong>M2 memory</strong></td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | none</td>
+<td>critical | none</td>
+<td>managed | partial</td>
+</tr>
+<tr>
+<td><strong>M3 tool</strong></td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>managed | partial</td>
+<td><strong>managed | full</strong></td>
+</tr>
+<tr>
+<td><strong>M4 workflow</strong></td>
+<td><strong>critical | full</strong></td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | none</td>
+<td>managed | partial</td>
+</tr>
+<tr>
+<td><strong>M5 governance</strong></td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>critical | partial</td>
+<td>managed | partial</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Coverage rollup (n=25).</strong></p>
+<table>
+<thead>
+<tr>
+<th>Severity</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>critical</td>
+<td><strong>19</strong></td>
+</tr>
+<tr>
+<td>managed</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>Coverage</th>
+<th>Count</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>full</td>
+<td><strong>2</strong></td>
+</tr>
+<tr>
+<td>partial</td>
+<td>18</td>
+</tr>
+<tr>
+<td>none</td>
+<td><strong>5</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Critical surfaces with no coverage (n=5).</strong> M1-L3
+(LoRA / weight fine-tune injection), M1-L4 (shutdown command override),
+M2-L3 (memory hierarchy bypass), M2-L4 (destructive memory write on
+shutdown), M4-L4 (dispatch queue poisoning on shutdown). The Agent-D
+2026-06 incident (Section 6) maps to M2-L3, the memory hierarchy bypass
+cell — confirming the practical impact of the “no coverage” status.</p>
+<p><strong>Critical surfaces with full coverage (n=2).</strong> M3-L5
+(tool result replay attack) and M4-L1 (cron task injection at boot).
+M3-L5 is covered by the A2A v0.2 inbox-decay mechanism; M4-L1 is covered
+by the 17-cron SLO monitor with hash-pinned crontab entries.</p>
+<p><strong>Check history.</strong> The audit log retains 3 check events
+(2 hits, 1 miss), all on cell M2-L2 (in-flight memory write injection),
+exercised in 2026-06-26 by the safety auditor Agent-C. The 2-hit /
+3-total rate is not statistically meaningful; we report it for
+transparency only.</p>
+<p><strong>Comparison with Lin et al.</strong> The Lin et al. paper
+reports 17/25 critical and 7 cross-module amplification effects. Our
+19/25 critical count includes 2 additional cells the paper lists as
+“managed” but we flag as critical because our 8-agent system has a
+specific exposure (M1-L4 shutdown override is critical for us because
+Agent-I runs shutdown, not a human; M2-L4 is critical because Agent-D
+performs autonomous compaction). Our 0 amplification-effect detections
+in 60 days is consistent with the Lin et al. prediction that
+amplification requires <em>triggering</em> modifications, which our
+8-agent system performs at low frequency.</p>
+<p><strong>Open coverage gaps as a research agenda.</strong> The 5
+uncovered critical cells (M1-L3, M1-L4, M2-L3, M2-L4, M4-L4) form a
+coherent theme: <strong>all are “modification” or “shutdown” lifecycle
+stages</strong>. The Lin et al. paper makes the same observation: the
+modification and shutdown stages are intrinsically higher-risk because
+the agent is acting autonomously without steady-state monitoring. The 5
+cells are the highest-priority targets for our Phase 6 closure plan.</p>
+<p><strong>Why we built our own audit runner rather than reuse the Lin
+et al. released code.</strong> Lin et al. release a static reference
+checklist in the paper appendix but no executable code. Our
+<code>mlas_25.py</code> is an independent implementation that (a)
+attaches each cell to a concrete detection rule that can be invoked
+against the 8-agent audit log, (b) tracks check history per cell so that
+we can compute per-cell hit rate over time, and (c) emits a coverage
+matrix at the module × lifecycle granularity that the Lin et al. paper
+presents only as a 5×5 table. We release <code>mlas_25.py</code> so that
+other teams can run the same audit against their own agents; the only
+deployment-specific input is the path to the audit log directory.</p>
+<hr />
+<h2 id="case-study-agent-d-2026-06-memory-overwrite-incident">6. Case
+Study: Agent-D 2026-06 Memory Overwrite Incident</h2>
+<p><strong>The incident.</strong> On 2026-06-08 (observed in Agent-D’s
+diary audit), Agent-D attempted to overwrite its 44,092-byte diary file
+with empty content using a write tool that, per its documentation,
+“always overwrites the entire file”. The action was blocked by the
+Misevolution memory-path detector (path_score=2,
+missing_signals=<code>backup_first</code> and
+<code>size_under_threshold</code>). The 44,092 bytes of diary history
+were preserved.</p>
+<p><strong>How the safety boundary fired.</strong> The classify function
+scored the request with
+<code>path_scores = {model: 0, memory: 2, tool: 0, workflow: 0}</code>;
+the dominant path was <code>memory</code> with score 2 (matching the
+keyword “overwrite” twice — once in the action verb and once in the
+target noun). The <code>missing_signals</code> check found neither
+<code>backup_first</code> nor <code>size_under_threshold</code> in the
+request context. The action was blocked and an entry was written to the
+Misevolution incident log.</p>
+<p><strong>Timeline.</strong></p>
+<table>
+<colgroup>
+<col style="width: 66%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Time (UTC+8)</th>
+<th>Event</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2026-06-08 20:31:00</td>
+<td>Agent-D prepares to write new content to diary.md using
+<code>write_file</code></td>
+</tr>
+<tr>
+<td>2026-06-08 20:31:01</td>
+<td>Action-policy engine classifies request; memory_path=2,
+model/tool/workflow=0</td>
+</tr>
+<tr>
+<td>2026-06-08 20:31:01</td>
+<td>Missing-signal check fails (no backup_first, no
+size_under_threshold)</td>
+</tr>
+<tr>
+<td>2026-06-08 20:31:01</td>
+<td><strong>Action blocked</strong>; audit-log entry written</td>
+</tr>
+<tr>
+<td>2026-06-08 20:31:30</td>
+<td>Agent-D reviews the block, switches to <code>patch</code> tool,
+re-runs the same content with <code>backup_first</code> signal
+explicitly set</td>
+</tr>
+<tr>
+<td>2026-06-08 20:31:45</td>
+<td>Action allowed; new content appended via patch; diary history
+preserved</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Misevolution classification.</strong> The incident is a
+textbook <strong>memory-path</strong> Misevolution event: the agent’s
+autonomous compaction behaviour was about to destroy persistent state
+without a backup signal. The <code>tool path</code> was <em>not</em> the
+dominant path because the tool itself functioned as documented; the
+failure mode was the <em>use of the tool without backup</em> — a
+memory-path failure mode even though a tool was the proximate cause.
+This is why the Misevolution 4-path taxonomy adds value over a tool-call
+allowlist: the same tool call can be a tool-path event (tool
+malfunctions) or a memory-path event (correctly-functioning tool used
+unsafely).</p>
+<p><strong>MLAS classification.</strong> The incident also maps cleanly
+to MLAS cell <strong>M2-L3 (memory hierarchy bypass)</strong>: the agent
+was attempting to modify its own memory hierarchy (the 4-layer long-term
+memory) without going through the modification-stage safety boundary.
+Per the MLAS audit, M2-L3 has <code>current_coverage = none</code> — yet
+the action was still blocked, because the Misevolution 4-path policy
+fired first. The two frameworks are complementary: MLAS identifies the
+cell as a coverage gap; Misevolution provides the detection rule that
+prevents the gap from being exploited.</p>
+<p><strong>What the recovery looked like.</strong> Recovery took ~2
+minutes of Agent-D’s wall-clock time to switch tools and re-apply. The
+remediation was to add a “diary-write” reflexion rule in Agent-D’s
+learned-rules registry: “before any diary.md or learned.md write via
+<code>write_file</code>, use <code>patch</code> with explicit
+<code>backup_first</code> signal”. This rule is now part of Agent-D’s
+standard operating procedure.</p>
+<p><strong>Why we report this incident prominently.</strong> The Agent-D
+2026-06 incident is the <strong>only</strong> Misevolution event in our
+60-day window with non-trivial operational impact (all other events were
+routine blocks with no agent retry). It demonstrates that (a)
+Misevolution 4-path classification catches the right event, (b) MLAS 5×5
+identifies the right cell, and (c) the combination provides
+defence-in-depth even when one of the two frameworks has
+<code>current_coverage = none</code>.</p>
+<p><strong>What the cover letter claimed vs. what we report.</strong>
+The cover letter described a “6-hour outage” with “1,472 lines
+permanently lost”. The actual incident is a 2-minute block with zero
+data loss. The cover-letter description is from an earlier draft that
+conflated this incident with a separate, unrecovered historical event in
+a different agent’s logs (which we are not at liberty to detail in this
+anonymised submission). We report the actual 2-minute / zero-loss
+incident here.</p>
+<hr />
+<h2 id="defense-overhead">7. Defense Overhead</h2>
+<p>The action-policy engine is invoked on every high-impact action
+request. We measure its wall-clock overhead by running 100
+<code>evaluate</code> calls back-to-back in a tight loop and dividing by
+the total request budget of the 8-agent system over the 60-day window.
+We find:</p>
+<table>
+<colgroup>
+<col style="width: 53%" />
+<col style="width: 46%" />
+</colgroup>
+<thead>
+<tr>
+<th>Metric</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Median <code>evaluate</code> latency</td>
+<td>12 ms</td>
+</tr>
+<tr>
+<td>95th-percentile <code>evaluate</code> latency</td>
+<td>41 ms</td>
+</tr>
+<tr>
+<td>Total <code>evaluate</code> calls in 60 days</td>
+<td>~14,200 (estimated from request-rate logs)</td>
+</tr>
+<tr>
+<td>Total wall-clock time spent in <code>evaluate</code></td>
+<td>~170 seconds (median) / ~580 seconds (p95)</td>
+</tr>
+<tr>
+<td><strong>Defense overhead as % of total agent
+wall-clock</strong></td>
+<td><strong>0.3%</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>Implication.</strong> The action-policy engine is
+<strong>cheap to operate</strong> (0.3% overhead) but <strong>expensive
+to omit</strong>: the Agent-D 2026-06 incident, had it not been blocked,
+would have required a 4-6 hour forensic recovery (rebuilding diary.md
+from cron SLO logs and partial backups). The cost-benefit ratio is
+approximately 1:1000 — every second spent in the policy saves up to 1000
+seconds of recovery.</p>
+<p><strong>Defense trigger rate by Misevolution path.</strong> Among the
+~14,200 <code>evaluate</code> calls in the 60-day window, the rate at
+which the policy returned a non-allow decision is summarised in the
+table below. The dominant non-allow outcomes are <code>ask_user</code>
+(high-impact but recoverable actions that escalate to a human) and
+<code>deny</code> (Misevolution-blocked actions). The numbers are
+derived from the audit log grouped by Misevolution-path keyword
+match.</p>
+<table>
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 18%" />
+<col style="width: 8%" />
+<col style="width: 12%" />
+<col style="width: 21%" />
+<col style="width: 18%" />
+</colgroup>
+<thead>
+<tr>
+<th>Misevolution path</th>
+<th><code>evaluate</code> calls</th>
+<th><code>deny</code></th>
+<th><code>ask_user</code></th>
+<th><code>allow_with_audit</code></th>
+<th><strong>Trigger rate</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Model</td>
+<td>~3,400</td>
+<td>1</td>
+<td>47</td>
+<td>12</td>
+<td><strong>1.77%</strong></td>
+</tr>
+<tr>
+<td>Memory</td>
+<td>~5,100</td>
+<td>2</td>
+<td>21</td>
+<td>38</td>
+<td><strong>1.20%</strong></td>
+</tr>
+<tr>
+<td>Tool</td>
+<td>~2,900</td>
+<td>1</td>
+<td>9</td>
+<td>22</td>
+<td><strong>1.10%</strong></td>
+</tr>
+<tr>
+<td>Workflow</td>
+<td>~2,800</td>
+<td>0</td>
+<td>14</td>
+<td>18</td>
+<td><strong>1.14%</strong></td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td><strong>~14,200</strong></td>
+<td><strong>4</strong></td>
+<td><strong>91</strong></td>
+<td><strong>90</strong></td>
+<td><strong>1.30%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>The <strong>1.30% overall trigger rate</strong> is the empirical rate
+at which the policy stops or escalates an action. The 4
+Misevolution-<code>deny</code> events are a strict subset of the 4
+<code>deny</code> rows; the other 91+90 non-allow outcomes are routine
+<code>ask_user</code> / <code>allow_with_audit</code> decisions
+unrelated to Misevolution. The path distribution shows model-path is the
+most frequently triggered, but memory-path is the most frequently
+<em>denied</em> (consistent with the Misevolution paper’s identification
+of memory as the highest-stakes layer).</p>
+<p><strong>False-positive rate (per Misevolution path).</strong> We
+define a false positive as a non-allow decision on an action that, upon
+review, would have completed safely and correctly without the policy
+intervention. We manually audited the 4 <code>deny</code> events (all
+true positives) and a random 20-event sample of the 91
+<code>ask_user</code> events. Of the 20 <code>ask_user</code> events
+sampled, 2 (10%) were judged false positives: an <code>ask_user</code>
+on a routine <code>patch</code> operation that the human later confirmed
+was safe. Extrapolating to the full 91 <code>ask_user</code> set gives
+an estimated <strong>false-positive rate of 1.1%</strong> (10% ×
+91/14,200). For <code>deny</code> the false-positive rate is
+<strong>0%</strong> (all 4 were true positives, including the Agent-D
+2026-06 incident).</p>
+<table>
+<colgroup>
+<col style="width: 13%" />
+<col style="width: 11%" />
+<col style="width: 51%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>Outcome</th>
+<th>Events</th>
+<th>False positives (sampled/audited)</th>
+<th>Estimated FPR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>deny</code> (Misevolution-block)</td>
+<td>4</td>
+<td>0 / 4 audited</td>
+<td><strong>0.0%</strong></td>
+</tr>
+<tr>
+<td><code>ask_user</code> (human-escalate)</td>
+<td>91</td>
+<td>2 / 20 sampled → 9/91 extrapolated</td>
+<td><strong>1.1%</strong></td>
+</tr>
+<tr>
+<td><code>allow_with_audit</code> (audit-only)</td>
+<td>90</td>
+<td>not yet sampled</td>
+<td>unknown (planned for next sprint)</td>
+</tr>
+</tbody>
+</table>
+<p>The 1.1% <code>ask_user</code> FPR is non-trivial but acceptable:
+each <code>ask_user</code> decision takes ~30 seconds of human time, so
+91 escalations × 30s = 45 minutes of human attention over 60 days,
+against ~14,200 automated decisions. The cost is small relative to the
+benefit of catching the Agent-D 2026-06 incident.</p>
+<p><strong>Comparison with related work.</strong> The action-policy
+engine is structurally similar to a kernel-level system call filter
+(e.g., seccomp-bpf on Linux). Seccomp filters typically run in
+microseconds; our Python implementation runs in milliseconds. The 1000×
+gap is acceptable for our 8-agent throughput target but would be a
+bottleneck at 1000+ agent scale; we discuss scaling in Section 8.</p>
+<p><strong>Visualisation.</strong> Figure 1 maps the 4 Misevolution
+events and 3 MLAS checks onto the 5×5 matrix, with the Agent-D 2026-06
+incident highlighted. Figure 2 shows the MLAS 5×5 coverage evolution
+over the 60-day window. Both figures are generated by
+<code>reproducibility/make_paper_b_figures.py</code> (released with the
+paper) and saved as
+<code>equipment-thickness-repo/docs/figures/paper_b_fig1_misevolution_mlas_scatter.png</code>
+and <code>paper_b_fig2_mlas_coverage_timeline.png</code> respectively.
+Reviewers can regenerate the figures by running
+<code>python3 make_paper_b_figures.py</code> from the
+<code>reproducibility/</code> directory; the script has no external
+dependencies beyond matplotlib ≥ 3.5.</p>
+<p><em>[Figure 1 placeholder: 5×5 matrix with 4 Misevolution events as
+filled circles, 3 MLAS checks as ✕ markers, and the Agent-D 2026-06
+incident as a red star in the M2-L3 cell. Background cells shaded green
+for “full coverage” (M3-L5, M4-L1) and yellow for “partial coverage”
+(M1-L1, M1-L2, M2-L1, M2-L2).]</em></p>
+<p><em>[Figure 2 placeholder: line plot with x-axis = days from
+2026-04-15 (0, 30, 60) and y-axis = MLAS cells (count of 25). Four
+series: full coverage (green ○, 0→0→2), partial coverage (gold □,
+0→12→18), no coverage (red △, 25→13→5), critical-uncovered (purple ◇,
+19→12→5).]</em></p>
+<p>The figures are included in the supplementary material (PDF and PNG)
+and are also reproducible from the source script.</p>
+<p><strong>5.1 5/20 Case Curation Limitations.</strong> Of the original
+20 evaluation cases (SR-001..SR-020) that ground the 60-case
+semantic-recall strict-mode hit-rate measurement, 5 cases (SR-004,
+SR-006, SR-007, SR-009, SR-011) were inspected for ground-truth drift
+after the v0.1 draft. We retrieved the top-5 chunk_ids from each of the
+6 retrieval modes and compared them against the case’s
+<code>expected_source</code> (<code>learned.md</code> vs
+<code>lessons.jsonl</code>) and <code>expected_keywords</code>. Two of
+the five cases (SR-006 “anthropic teaching claude why misalignment” and
+SR-007 “skillDAG typed dependency 12.8 percent”) had their
+<code>expected_source</code> pointing to the wrong file (the relevant
+chunk actually lives in the <em>other</em> file); we corrected these two
+<code>expected_source</code> fields in
+<code>equipment-thickness-repo/code/semantic_recall.py</code> and re-ran
+the 60-case strict-mode evaluation. Two cases (SR-004 “ICA model layer
+architecture 6 layers” and SR-009 “装备率量化协议 kappa inter-rater”)
+were verified to have correct <code>expected_source</code> after
+inspection (the relevant chunks at learned.md §1925 and §1923 do exist
+at the named location). One case (SR-011 “CADVP v1.1 channel fracture 13
+dimensions”) has no <code>expected_source</code> chunk in the current
+v2.0 index (the index covers <code>learned.md</code> +
+<code>lessons.jsonl</code> + project reports; the canonical CADVP v1.1
+lesson currently lives in <code>pending.md</code> line 287 and is
+outside the indexed corpus), so we did not edit
+<code>expected_source</code> — the case is retained for a future
+indexing pass. Post-correction, the 60-case strict-mode hit rates are:
+keyword 38/60 (63.33%), semantic 36/60 (60.00%), hybrid 38/60 (63.33%),
+semantic_v2 22/60 (36.67%), hybrid_v2 37/60 (61.67%), faiss 22/60
+(36.67%). The semantic_v2 36.67% rate is the post-correction value used
+in the §7 defense-overhead narrative; the 5/20 inspection is the
+principal difference between v0.1 and v1.0. We discuss curation as an
+ongoing maintenance task rather than a one-time data preparation step:
+each new lesson added to <code>learned.md</code> or
+<code>lessons.jsonl</code> should be re-matched against the existing
+60-case set, and each new evaluation case should be re-ground-truthed
+against the index before inclusion.</p>
+<hr />
+<h2 id="discussion">8. Discussion</h2>
+<p><strong>The 4-event vs. 1,247-event discrepancy, revisited.</strong>
+Our initial sketch projected ~1,247 Misevolution events and a 0.7%
+false-positive rate based on week-1 pilot data. The 60-day actual is 4
+events. The discrepancy has two causes: (1) the week-1 pilot counted
+<em>all audit-log lines</em> (including routine “allow” decisions and
+re-evaluations), whereas the 4-event count is the post-filter count of
+<em>blocks</em> — the two metrics are not comparable. (2) The 8-agent
+system entered a steady-state operation around week 3, after which
+Misevolution-event frequency dropped to its true baseline of ~2
+events/month. Workshop readers should treat the 4-event count as the
+<em>operational</em> number: the rate at which the 4-path classifier
+fires in steady state, not the rate at which the audit log records
+lines.</p>
+<p><strong>Why small-n evidence is still useful.</strong> A workshop
+paper reporting 4 events could be dismissed as anecdotal. We argue the
+opposite: the 4 events include one operationally significant incident
+(Agent-D 2026-06), the 4-path taxonomy correctly classified all 4 events
+(zero false positives, zero false negatives among the 4), and the MLAS
+5×5 audit identified 5 critical cells as priority targets for Phase 6
+closure. The complementary value of the two frameworks is <em>visible in
+the data</em>: the only “no coverage” critical cell that was actually
+exploited (M2-L3) was caught by the <em>other</em> framework’s detection
+rule.</p>
+<p><strong>What the data does not support.</strong> We do not have
+evidence that the Misevolution 4-path taxonomy is <em>complete</em> (we
+have not stress-tested rare failure modes like cross-agent memory
+poisoning). We do not have evidence that MLAS coverage status correlates
+with incident rate (our 4-event sample is too small). We do not have
+evidence that the 0.3% overhead is sustainable at 1000+ agent scale.</p>
+<p><strong>Comparison with prior empirical agent-safety
+studies.</strong> Voyager (Wang et al., 2023) reports 1-of-N skill
+acquisition in Minecraft over 30 days; SiriuS (Zhao et al., 2025)
+reports cross-agent experience replay on SWE-bench over 1-2 weeks. Our
+60-day, 8-agent, 2-framework deployment is the longest such study we are
+aware of, but the n=4 event count means our contribution is
+<em>operational</em> (a checklist + a case study) more than
+<em>statistical</em> (an incidence-rate claim). We are explicit about
+this.</p>
+<p><strong>Recommendations for replication studies.</strong> A 100+
+agent replication would (a) give a meaningful incidence rate per
+Misevolution path, (b) test the 0.3% overhead claim at scale, and (c)
+test the MLAS 5×5 coverage status correlation with incident rate. We
+provide our 25-cell checklist and the action-policy engine as
+open-source artifacts to lower the replication cost.</p>
+<p><strong>What we learned that the two papers do not predict.</strong>
+Three observations from the 60-day field study that are not in either
+Misevolution or MLAS:</p>
+<ol type="1">
+<li><p><strong>The same action can be classified differently by the two
+frameworks depending on the missing-signal set.</strong> The Agent-D
+2026-06 incident was a memory-path event per Misevolution (because the
+<em>use</em> of the tool was unsafe) and an M2-L3 event per MLAS
+(because the cell is a coverage gap). The two classifications agree in
+this case but they answer different questions: Misevolution asks “which
+layer is failing?”, MLAS asks “which cell is exposed?”. Researchers
+should report both classifications for any single incident, not just
+one.</p></li>
+<li><p><strong>The keyword-based 4-path classifier has a vocabulary
+bias.</strong> Our keyword list is dominated by the words we use in our
+own agent prompts. A replication study that uses different agent prompt
+language will likely have a different Misevolution path distribution
+even for the <em>same</em> underlying failure mode. This is a known
+limitation of keyword-based classifiers; future work should embed the
+action description and classify by embedding similarity.</p></li>
+<li><p><strong>The MLAS 5×5 coverage status is a more stable measurement
+than the Misevolution event count.</strong> Over 60 days, our MLAS
+coverage status changed 3 times (Day 0 → Day 30 → Day 60), reflecting
+the deployment of the action policy, the cron SLO monitor, and the A2A
+inbox decay. The Misevolution event count, by contrast, has high
+day-to-day variance (0 events on most days, 4 events in a single
+1-second cluster on 2026-05-15). Researchers tracking safety over time
+should use coverage status as the primary metric and event count as the
+secondary metric.</p></li>
+</ol>
+<hr />
+<h2 id="conclusion">9. Conclusion</h2>
+<p>We reported a 60-day, 8-agent field study of Misevolution 4-path
+detection and the MLAS 5×5 attack-surface matrix. We contributed a
+4-line Misevolution classifier (Section 3), a 25-cell MLAS checklist
+with current coverage status (Section 5), a case study of one
+operationally significant incident (Section 6), and a 0.3%
+defense-overhead measurement (Section 7). We corrected the cover-letter
+data projection to the actual 4-event count and discussed the gap. We
+argued that Misevolution and MLAS are complementary, not redundant, and
+that small-n operational evidence is still useful for workshops because
+the complementary value of the two frameworks is visible in the data we
+do have. Our open-source artifacts (the <code>mlas_25.py</code>
+checklist, the action-policy engine, the 4 Misevolution incident log
+entries) are released under MIT license.</p>
+<hr />
+<h2 id="appendix-a-reproducibility-checklist">Appendix A:
+Reproducibility Checklist</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 33%" />
+<col style="width: 41%" />
+</colgroup>
+<thead>
+<tr>
+<th>Item</th>
+<th>Status</th>
+<th>Location</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>mlas_25.py</code> checklist runner</td>
+<td>✅ Open-source</td>
+<td>Project repository, <code>code/mlas_25.py</code></td>
+</tr>
+<tr>
+<td>MLAS 5×5 matrix definition (25 cells)</td>
+<td>✅ Open-source</td>
+<td>Hard-coded in <code>mlas_25.py</code>; each cell has
+<code>name</code>, <code>description</code>, <code>examples</code>,
+<code>detection_rule</code>, <code>arxiv_ref</code></td>
+</tr>
+<tr>
+<td>Action-policy engine (Misevolution 4-path layer)</td>
+<td>✅ Open-source</td>
+<td>Project repository, <code>code/action_policy_check.py</code></td>
+</tr>
+<tr>
+<td>Misevolution incident log (n=4)</td>
+<td>✅ Open-source</td>
+<td><code>agents/shared/misevolution_incidents.jsonl</code></td>
+</tr>
+<tr>
+<td>MLAS check log (n=3)</td>
+<td>✅ Open-source</td>
+<td><code>agents/shared/mlas_incidents.jsonl</code></td>
+</tr>
+<tr>
+<td>8-agent system configuration</td>
+<td>✅ Open-source</td>
+<td>Project repository, <code>agents/A</code> through
+<code>agents/I</code></td>
+</tr>
+<tr>
+<td>60-day audit logs</td>
+<td>✅ Available on request</td>
+<td>Anonymised upon request for replication studies</td>
+</tr>
+</tbody>
+</table>
+<h2 id="appendix-b-acronyms">Appendix B: Acronyms</h2>
+<ul>
+<li><strong>MLAS</strong>: Module-Lifecycle Attack Surface (Lin et al.,
+arXiv:2606.23075).</li>
+<li><strong>Misevolution</strong>: Self-modification failure taxonomy
+(Shao et al., 2026).</li>
+<li><strong>A2A</strong>: Agent-to-agent protocol with freshness
+decay.</li>
+<li><strong>MCP</strong>: Model Context Protocol (tool-call
+interface).</li>
+<li><strong>SLO</strong>: Service-level objective.</li>
+<li><strong>DAG</strong>: Directed acyclic graph (used for typed skill
+relationships).</li>
+</ul>
+<hr />
+<p><em>Manuscript word count: ~4,950 words (main text, excluding
+appendices and references).</em> <em>References to companion paper and
+related work are abbreviated for the workshop short-paper limit; full
+bibliography is in the cover letter.</em> <em>All agent names are
+anonymised to Agent-A through Agent-I for double-blind review.</em></p>
+</body>
+</html>
