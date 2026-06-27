@@ -44,7 +44,7 @@ This paper makes four contributions:
 
 We make no claim that **Equipment Thickness Theory** is a complete theory of agentic capability. We make the narrower claim: in production multi-agent deployments, equipment thickness is a **first-order variable** that explains observed capability variance, and it has an analyzable structure. Our cross-layer isomorphism is the first systematic account; it is consistent with all evidence we have collected, but we discuss conditions under which it would be falsified (Section 7).
 
-![Figure 1: $C(\rho)=1-e^{-\beta\rho}$, $\beta\in\{0.3,0.5,0.7\}$; $\rho_{\min}=0.5$.](figures/fig1_theory_framework.png){#fig:theory_framework}
+![Figure 1: $C(\rho)=1-e^{-\beta\rho}$, $\beta\in\{0.3,0.5,0.7\}$.](figures/fig1_theory_framework.png){#fig:theory_framework}
 
 ![Figure 2: 12 cross-layer pairs, model ↔ coordination; solid = verified.](figures/fig2_12_isomorphisms.png){#fig:iso12}
 
@@ -642,11 +642,11 @@ To consolidate the per-phase results above into a single auditable artifact, we 
 
 #### 6.7.7 Visuals and completion
 
-![Figure 3: 90-day equipment timeline, 8 agents.](figures/fig3_8agent_equipment_timeline.png){#fig:timeline}
+![Figure 3: 90-day equipment timeline.](figures/fig3_8agent_equipment_timeline.png){#fig:timeline}
 
 ![Figure 4: Minimum-viable scatter.](figures/fig4_minimum_viable.png){#fig:minviable}
 
-![Figure 5: Equal-upgrade throughput (3.0–3.8×).](figures/fig5_industry_signal.png){#fig:industry}
+![Figure 5: Equal-upgrade throughput.](figures/fig5_industry_signal.png){#fig:industry}
 
 ![Figure 6: Equipment vs model-scale ROI.](figures/fig6_roi_comparison.png){#fig:roi}
 
@@ -658,8 +658,6 @@ To consolidate the per-phase results above into a single auditable artifact, we 
 | P4 Recall | 0 | 361/35% | — | **60% / 93.3%** ⚠ |
 | P5 SkillDAG | 0 | 0 | 49/37/93.4% | **207/159/95%** (1.7×) |
 | **Total** | 25% | 45% | 60% | **80%** |
-
-(Table 3.)
 
 ### 6.8 Operational rules for AGI-like systems (sprint distillation)
 
