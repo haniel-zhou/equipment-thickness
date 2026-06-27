@@ -1,0 +1,162 @@
+[
+  {
+    "pair_id": "#9",
+    "name": "Pair #9: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)",
+    "pass": 1,
+    "status": "✅",
+    "detail": "OpenMythos topk produces (B=2,T=16,K=5) tensor; mass concentrated = 1.0000",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#9",
+    "name": "Pair #9: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)",
+    "pass": 2,
+    "status": "✅",
+    "detail": "Top-K mass (K=5) is bounded in [0,1] = 1.0000; stable across same input",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#9",
+    "name": "Pair #9: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)",
+    "pass": 3,
+    "status": "✅",
+    "detail": "SkillDAG recommend returned primary='nexus_dispatch' score=0.5",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#9",
+    "name": "Pair #9: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)",
+    "pass": 4,
+    "status": "✅",
+    "detail": "Re-injected 5 tasks; 4 distinct primary skills → dispatch is task-conditioned",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#9",
+    "name": "Pair #9: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)",
+    "pass": 5,
+    "status": "✅",
+    "detail": "SkillDAG routing edges: REQUIRES=69, COMPOSES_WITH=33, RISK_ESCALATES_TO=15 — shared (composition) + routed (REQUIRES) both present",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#10",
+    "name": "Pair #10: Position encoding (RoPE) ↔ Time-stamp + decay lambda",
+    "pass": 1,
+    "status": "✅",
+    "detail": "RoPE precompute produces (T, head_dim/2) complex freqs; shape=(128, 128)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#10",
+    "name": "Pair #10: Position encoding (RoPE) ↔ Time-stamp + decay lambda",
+    "pass": 2,
+    "status": "✅",
+    "detail": "RoPE |freqs| max = 1.0000 (bounded by 1.0 — equivalent to LTI ρ(A) < 1)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#10",
+    "name": "Pair #10: Position encoding (RoPE) ↔ Time-stamp + decay lambda",
+    "pass": 3,
+    "status": "✅",
+    "detail": "apply_rope(x, freqs) is per-position rotation; mean abs diff = 0.2129",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#10",
+    "name": "Pair #10: Position encoding (RoPE) ↔ Time-stamp + decay lambda",
+    "pass": 4,
+    "status": "✅",
+    "detail": "Inbox freshness decay S(24h) = S_0 * exp(-0.0595*24) = 0.2400 (paper §4.3 reports 0.24 = 76% reduction)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#10",
+    "name": "Pair #10: Position encoding (RoPE) ↔ Time-stamp + decay lambda",
+    "pass": 5,
+    "status": "✅",
+    "detail": "Math correspondence: RoPE cos/sin(exp(i*theta_t)) ↔ exp(-lambda*dt); both encode 'where in the sequence' with bounded amplitude",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#11",
+    "name": "Pair #11: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)",
+    "pass": 1,
+    "status": "✅",
+    "detail": "MoE router output shape (B*T, 8); bias buffer of length 8",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#11",
+    "name": "Pair #11: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)",
+    "pass": 2,
+    "status": "✅",
+    "detail": "router_bias max |.| = 0.0000 (load-balancing; small bounded values)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#11",
+    "name": "Pair #11: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)",
+    "pass": 3,
+    "status": "✅",
+    "detail": "Per-token top-2 expert selection probability: mean=0.1723",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#11",
+    "name": "Pair #11: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)",
+    "pass": 4,
+    "status": "✅",
+    "detail": "Bias participates in every forward (n_experts_per_tok=2 re-routes possible)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#11",
+    "name": "Pair #11: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)",
+    "pass": 5,
+    "status": "✅",
+    "detail": "SkillDAG: 6 typed edge types (REQUIRES/COMPOSES_WITH/SPECIALIZES/RISK_ESCALATES_TO/CONFLICTS_WITH/REPLACES), 159 edges, acyclic=True → load-balancing routing analog of MoE bias",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#12",
+    "name": "Pair #12: Beam search termination ↔ ACT-style early stop at confidence threshold",
+    "pass": 1,
+    "status": "✅",
+    "detail": "ACT Halting output shape (B=2, T=16) per-position probability",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#12",
+    "name": "Pair #12: Beam search termination ↔ ACT-style early stop at confidence threshold",
+    "pass": 2,
+    "status": "✅",
+    "detail": "ACT mean halting prob = 0.3975 (bounded in (0,1))",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#12",
+    "name": "Pair #12: Beam search termination ↔ ACT-style early stop at confidence threshold",
+    "pass": 3,
+    "status": "✅",
+    "detail": "Per-position halting prob variance = 0.000379 (positions stop independently)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#12",
+    "name": "Pair #12: Beam search termination ↔ ACT-style early stop at confidence threshold",
+    "pass": 4,
+    "status": "✅",
+    "detail": "Frozen e re-injection to recurrent block verified upstream (sanity_check.py Pass 4: ✅)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  },
+  {
+    "pair_id": "#12",
+    "name": "Pair #12: Beam search termination ↔ ACT-style early stop at confidence threshold",
+    "pass": 5,
+    "status": "⚠️",
+    "detail": "Coordination ACT analog: action_policy_check.evaluate on 'rm -rf' returns 0-line decision with early-stop semantics (deny/block = terminate iteration, analog of beam-search convergence)",
+    "ts": "2026-06-27T04:11:34+00:00"
+  }
+]
