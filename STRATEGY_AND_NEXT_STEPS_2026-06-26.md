@@ -1076,6 +1076,167 @@ $ python3 agi_outcome_tracker.py scan --print-limit 0
 
 ---
 
-*v0.10 · 2026-06-27 · Kimi (MemPalace agent) · 移除虚假 §十五 §十六 内容, 替换为诚实 Day 3 review*
-*v0.9 → v0.10 关键变化: 删除 simulation 性质的 Day 22-30 narratives, 记录真实 Day 3 状态*
-*下次更新: Day 5 (2026-06-30) - Phase 3 integration test + 第一份 weekly scoreboard*
+## 十六、P0 Rollup · 6 项可执行 TODO 拆分（2026-06-27 · v0.11 · feat/p0-rollup branch）
+
+> **触发**: Haniel 6-27 指令「先推进 p0 其他事项」 + 工作量评估 (单轮无法闭环全部)
+> **本轮交付**: 1) git worktree 隔离 (`feat/p0-rollup` 分支) 2) 6 项 P0 拆为 3-5 步子 TODO, 每项标文件路径 / 工期 / Done condition
+> **本轮不交付**: 实际工程代码 / 论文章节写入 (留待后续逐项推进, 避免单次过度承诺)
+> **工作分支**: `feat/p0-rollup` @ `paper_drafts.p0-rollup/`
+
+### 16.1 P0 清单与拆分
+
+#### P0-1 · 12 跨层同构 sanity check 补全 (#9-#12)
+
+**当前状态**: v3 paper §4.1 标 `#9-#12` 为 "⏳ Predicted"。8 对 verified + 4 对 predicted 的非对称会被审稿人 challenge。
+
+**4 对待验证**:
+- **#9**: Decoding strategy (top-K, beam search) ↔ Dispatch strategy (top-K agents, routing DAG)
+- **#10**: Position encoding (RoPE) ↔ Time-stamp + decay lambda
+- **#11**: MoE router bias ↔ SkillDAG typed routing (arXiv 2606.03056)
+- **#12**: Beam search termination ↔ ACT-style early stop at confidence threshold
+
+**子 TODO**:
+1. 读 `10-vendored-repos/kyegomez-research/OpenMythos/sanity_check.py` 现有 5-pass 模板 (4h)
+2. 设计 4 对的 5-pass sanity 测试用例, 每对 5 sub-test = 20 sub-test (8h)
+3. 跑 model layer: OpenMythos `top_k_decode.py` / `rope.py` / `moe_router.py` / `beam_termination.py` (4h)
+4. 跑 coordination layer: `code/skill_dag.py recommend` / `code/run_weekly_evals.py` 派单 / `code/model_router.py decision_log` (4h)
+5. 写 4 对 verification 段落进 v3 paper §4.1 表 + §4.2 sanity 报告 (4h)
+6. 跑 `reproducibility/run_all.sh`, 验证 8→12 对扩展 (1h)
+
+**总工期**: 25h (~3 天)
+**Done condition**: §4.1 表全部 12 对标 ✅ Verified; 5-pass sanity 在 model+coordination 双向通过
+**文件**: `equipment-thickness-repo/code/openmythos_sanity_check.py` 扩 + `docs/paper_v1_anonymized.md` §4.1 改写
+
+---
+
+#### P0-2 · 配稿 B 起草 (Misevolution 4 路径 + MLAS 25 攻击面)
+
+**当前状态**: `_analysis/INCREMENT_ANALYSIS_2026-06-25.md` 标空白 2 为 P0 workshop 短文; `06-papers/cover_letters/ICLR_2026_Workshop_cover_letter.md` 5.4KB 已写完; **论文本身没动**。配稿 v3 主投安全保底。
+
+**子 TODO**:
+1. 读 `safety-layer.py` (478 行) + 4 路径事件 log (从 2026-04 起) (3h)
+2. 跑 `mlas_25.py audit` 拿 25 攻击面最新数据, MLAS critical 17→? (1h)
+3. 起草配稿 B 章节 1-3: Abstract / Intro / 8 Agent 系统 (6h)
+4. 起草章节 4-6: 4 路径事件统计 / 25 攻击面 checklist / Meridian 6-04 案例 (8h)
+5. 起草章节 7-9: 防御开销 / 讨论 / 结论 (4h)
+6. 6 张表 + 2 张图 (matplotlib) (3h)
+7. 跑 `word_count` ≤ 7000 字, ICLR workshop 页数 ≤ 7 (1h)
+
+**总工期**: 26h (~3.5 天)
+**Done condition**: `06-papers/drafts/02-experimental/paper_Misevolution_MLAS_2026-06-XX.md` ≥ 5000 字 / 6 表 / 2 图 / cover letter 引文对得上
+**文件**: 新建 `06-papers/drafts/02-experimental/paper_Misevolution_MLAS_2026-06-XX.md`
+
+---
+
+#### P0-3 · Phase 3 model_router 接入 production LLM call path
+
+**当前状态**: `model_router.py` (15.4KB / 487 行) 是 CLI prototype, paper §7.5 Rule 14 已诚实标 "CLI prototype"。**未接进真实 LLM 调用链**——审稿人看 code 与 paper 不一致会扣分。
+
+**子 TODO**:
+1. 定位 8 Agent 真实 LLM call 入口: `agents/*/run.py` / `code/semantic_recall.py:recall` / NEXUS 派单 (4h)
+2. 设计 `with_routing_decision_log()` 装饰器 / context manager, 包装每次 LLM call (4h)
+3. 改 `model_router.py` 加 `route_and_invoke(provider, category, prompt)` 函数, emit 20-field decision log (4h)
+4. 接入 1 个代表性 agent (e.g. Agent-A Kimi) 跑 100 次 LLM call, 验证 100% emit decision log (3h)
+5. 写 production integration test, 5 cases × 2 providers = 10 sub-test (3h)
+6. 更新 paper §6.7.3 把 "CLI prototype" caveat 删掉, 改 "production integration" (1h)
+7. 跑 `reproducibility/run_all.sh`, 验证 Phase 3 status 从 80% → 100% (1h)
+
+**总工期**: 20h (~2.5 天)
+**Done condition**: 100% production LLM call 走 model_router, decision log 全 emit, paper caveat 移除
+**文件**: `equipment-thickness-repo/code/model-router/model_router.py` 改 + 接入 1+ agent 调用链
+
+---
+
+#### P0-4 · Phase 4 v2.0 (sentence-transformers + FAISS, hit rate 35%→50%)
+
+**当前状态**: `semantic_recall.py` v1.0 (16.4KB) 用 BM25-lite + IDF + cosine, 60 eval case 跑 35% top-5 hit rate。30-day completion report §3.4 标 v2 路径 = sentence-transformers + FAISS, target ≥50%。
+
+**子 TODO**:
+1. 装 `sentence-transformers` + `faiss-cpu` (MPS 后端优先) 到隔离 venv (1h)
+2. 选 embedding model: `all-MiniLM-L6-v2` (本地 80MB) vs `bge-small-en` (本地 33MB) (1h)
+3. 重写 `semantic_recall.py` 加 `embed_and_index()` + `semantic_search()` 走 sentence-transformers + FAISS (6h)
+4. 索引 361 chunks (61 learned + 299 lessons + 1 reports) → FAISS index file (2h)
+5. 跑 60 case 重新打分, 比较 v1 (35%) vs v2 (target ≥50%) (2h)
+6. 保留 hybrid mode (0.7 BM25 + 0.3 semantic), 混合后 hit rate 是否 ≥60%? (3h)
+7. 写 `semantic_recall_v2_eval.md` 报告, 更新 paper §6.7.3 (1h)
+
+**总工期**: 16h (~2 天)
+**Done condition**: hit rate ≥50% (或 hybrid ≥60%), 60 case eval 跑通, paper 更新
+**文件**: `equipment-thickness-repo/code/memory/semantic_recall.py` 改 + 新增 `code/memory/faiss_index.bin`
+
+---
+
+#### P0-5 · GitHub remote + push
+
+**当前状态**: 本地仓 `paper_drafts/.git` 已有, branch `main` + 1 commit (d66e0be), **无 remote**。ICLR 2027 reproducibility 需公开 artifact。
+
+**子 TODO**:
+1. Haniel 提供 GitHub repo URL (或确认用 GitHub CLI `gh repo create`) — **人工确认** (1 min)
+2. `git remote add origin <url>` (1 min)
+3. `git push -u origin main` 验证全 44 文件可达 (1 min)
+4. 验证 GitHub 上 README 渲染 / PDF 链接 / LICENSE (5 min)
+5. 在 `equipment-thickness-repo/README.md` 顶部加 GitHub badge (1h)
+6. 配 `CITATION.cff` 让 GitHub 自动生成 "Cite this repository" 按钮 (1h)
+
+**总工期**: 2h (含等待 Haniel URL)
+**Done condition**: GitHub repo 可外部访问, README 渲染, CITATION 工作
+**文件**: `equipment-thickness-repo/README.md` 加 badge, `CITATION.cff` 完善
+
+---
+
+#### P0-6 · 最终 commit 收尾 + 推进记录归档
+
+**子 TODO**:
+1. 本分支 5 项 P0 全部完成 (或标注 part-done + 已知 gap) 后, 跑 `git status` 收集变更 (5 min)
+2. 写 commit message 含 (1) 5 P0 状态 (2) 已知 gap (3) 引用 paper § (10 min)
+3. `git commit -m "..."` 落到 `feat/p0-rollup` 分支 (1 min)
+4. `git log --oneline` 打印演进历史 (1 min)
+5. Haniel 决定是否 merge `feat/p0-rollup` → `main` 或保留为 feature branch (1 min)
+
+**总工期**: 30 min
+**Done condition**: `git log` 显示本轮 commit, working tree clean
+**文件**: 仅 git 元数据, 无源码变更
+
+---
+
+### 16.2 推荐推进顺序
+
+| 顺序 | P0 | 工期 | 阻塞依赖 | 并行可能性 |
+|------|-----|------|----------|----------|
+| **1** | P0-5 GitHub push | 2h | Haniel URL | 独立, 最先做 |
+| **2** | P0-4 Phase 4 v2.0 | 2 天 | 无 | 独立, 与 P0-3 并行 |
+| **3** | P0-3 Phase 3 接入 | 2.5 天 | 无 | 独立, 与 P0-4 并行 |
+| **4** | P0-1 同构 sanity | 3 天 | P0-3 部分数据 | 可与 P0-2 并行 |
+| **5** | P0-2 配稿 B | 3.5 天 | P0-3 数据 | 与 P0-1 并行 |
+| **6** | P0-6 commit 收尾 | 30 min | 全部完成 | 收口 |
+
+**总工期串行**: ~11 天 (2 周)
+**总工期并行 (3 轨)**: ~6-7 天 (1 周)
+**单轮 subagent 并行**: 1 轮, 5-10 分钟, 风险是输出质量参差
+
+### 16.3 子任务派发建议 (subagent)
+
+若用 subagent 并行推, 派发结构:
+- **subagent A (coder)**: P0-3 + P0-4 工程 sprint
+- **subagent B (coder)**: P0-1 + P0-2 论文
+- **subagent C (coder)**: P0-5 GitHub + P0-6 commit
+- **主代理**: 整合报告 + 决策 D1-D6 拍板提醒
+
+每 subagent prompt 需含: 完整文件路径 / Done condition / 引用 paper 章节 / 写完报告位置 (`07-reports/outcome-weekly/2026-06-XX-p0-rollup.md`)
+
+### 16.4 已知风险
+
+| 风险 | 概率 | 缓解 |
+|------|------|------|
+| P0-3 接入后 100% emit 影响 latency | 30% | 加 async emit, 不阻塞 call path |
+| P0-4 sentence-transformers 在 MPS 跑慢 | 40% | 选 CPU 后端或 bge-small-en 33MB |
+| P0-1 sanity check 设计 5-pass 不全 | 25% | 退到 3-pass (Pass 1/2/5 必跑) |
+| P0-2 配稿 B 与 v3 数据重叠 | 20% | 明确分工: v3 = 理论, 配稿 B = 实证 |
+| P0-5 GitHub URL Haniel 拖延 | 50% | 先推送到 Haniel 个人 org, 后续可迁移 |
+| 双盲检查在 P0-2 / P0-1 改完后再做 | 30% | 每个 P0 完成后立即 grep "Kimi/Haniel/MemPalace" |
+
+---
+
+*v0.10 → v0.11 变化: 新增 §十六 P0 Rollup 6 项可执行 TODO 拆分 (含工时 / Done condition / 并行策略 / 风险), 启动 feat/p0-rollup 分支隔离*
+*下次更新: P0-1/2/3/4 任一项完成时 (预计 Day 4-7 期间)*
+*工作分支: `feat/p0-rollup` @ `/Users/haniel/workspace/research/ai-agent-research/paper_drafts.p0-rollup/`*
